@@ -1,0 +1,32 @@
+<!-- templates/registration/login.html -->
+{% extends "templates/base.html" %}
+
+{% block title %}FLLG Log In{% endblock %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">Attorney Management Login</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
+    <section class="page-section" id="login">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="form-floating mb-3">
+                    <h4>Please log into the system below:</h4><br>
+                    <h5 class="text-center text-uppercase text-secondary mb-0">
+                        <form method="post">
+                          {% csrf_token %}
+                          {{ form.as_p }}
+                          <button class="btn btn-success" type="submit">Log In</button>
+                        </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content%}

@@ -1,0 +1,71 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block menu %}
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">{{ title }}</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <h4><u>Add New State</u></h4>
+    </div>
+    <div class="container">
+      <form method="post">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ stateForm.non_form_errors }}
+            {% crispy stateForm %}
+        </div>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-secondary">Add State</button>
+        </div>
+      </form>
+    </div>
+    <br><br>
+    <div class="container">
+        <h5><u>List of States</u> (Click to Edit)</u></h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Abbreviation</th>
+                    <th scope="col">Full State Name</th>
+                    <th scope="col">State Type</th>
+                    <th scope="col">Assigned Manager</th>
+                    <th scope="col">Recruiting Status</th>
+                    <th scope="col">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for state in states %}
+                <tr>
+                    <td>{{ state.state_abbrev }}</td>
+                    <td><a href="edit_state/{{ state.state_abbrev }}">{{ state.state_full}}</a></td>
+                    <td>{{state.state_status}}</td>
+                    <td>{{ state.manager}}</td>
+                    <td>{{ state.recruiting_status}}</td>
+                    <td>{{ state.state_priority}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

@@ -1,0 +1,105 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block menu %}
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">{{ title }}</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <a href="{% url 'add_states' %}">
+            <button class="btn btn-secondary" type="submit">Add / Modify States</button>
+        </a>
+    </div>
+<!--ADD SEARCH FUNCTIONALITY-->
+<!--    <div class="container">-->
+<!--        <h4><u>Add New States</u></h4>-->
+<!--    </div>-->
+
+    <br><br>
+    <div class="container">
+<!--        <h5>List of States</u> (Click to Edit)</u></h5>-->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">State</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Manager</th>
+                    <th scope="col">Recruiting Status</th>
+                    <th scope="col">Current / Est. FTE</th>
+                    <th scope="col">Current / Est. FT</th>
+                    <th scope="col">Current / Est. PT</th>
+                    <th scope="col">Current / Est. OC</th>
+                    <th scope="col">Current / Est. Float</th>
+                    <th scope="col">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for state in states %}
+                <tr>
+                    <td><h5><a href="edit_state/{{ state.state_abbrev }}">{{ state.state_full}} ({{ state.state_abbrev }})</a></h5></td>
+                    <td>{{state.state_status}}</td>
+                    <td>{{ state.manager}}</td>
+                    <td>{{ state.recruiting_status}}</td>
+
+                    {% if state.FTE_actual < state.FTE_est %}
+                        <td class = "bg-danger" style="text-align: center">{{ FTE_actual }}/{{ state.FTE_est}}</td>
+                    {% else %}
+                        <td class = "bg-success" style="text-align: center">{{ FTE_actual }}/{{ state.FTE_est}}</td>
+                    {% endif %}
+
+                    {% if state.full_time_actual < state.full_time_est %}
+                        <td class = "bg-danger" style="text-align: center">{{ full_time_actual }}/{{ state.full_time_est}}</td>
+                    {% else %}
+                        <td class = "bg-success" style="text-align: center">{{ full_time_actual }}/{{ state.full_time_est}}</td>
+                    {% endif %}
+
+                    {% if state.part_time_actual < state.part_time_est %}
+                        <td class = "bg-danger" style="text-align: center">{{part_time_actual}}/{{ state.part_time_est}}</td>
+                    {% else %}
+                        <td class = "bg-success" style="text-align: center">{{part_time_actual}}/{{ state.part_time_est}}</td>
+                    {% endif %}
+
+                    {% if state.of_counsel_actual < state.of_counsel_est %}
+                        <td class = "bg-danger" style="text-align: center">{{of_counsel_actual}}/{{ state.of_counsel_est}}</td>
+                    {% else %}
+                        <td class = "bg-success"style="text-align: center">{{of_counsel_actual}}/{{ state.of_counsel_est}}</td>
+                    {% endif %}
+
+                    {% if state.floater_actual < state.floater_est %}
+                        <td class = "bg-danger" style="text-align: center">{{floater_actual}}/{{ state.floater_est}}</td>
+                    {% else %}
+                        <td class = "bg-success"style="text-align: center">{{floater_actual}}/{{ state.floater_est}}</td>
+                    {% endif %}
+
+                    {% if state.state_priority == "Critical" or state.state_priority == "High"%}
+                        <td class = "bg-danger"><b>{{ state.state_priority}}</b></td>
+                    {% else %}
+                        <td>{{ state.state_priority}}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

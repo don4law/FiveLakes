@@ -1,0 +1,56 @@
+{% extends 'templates/base.html' %}
+
+{% block title %}FLLG Attorneys{% endblock %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">FLLG Attorney Management</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block logout %}
+    <div class="container">
+        {% if user.is_authenticated %}
+<!--            <p style="text-align: right">Active User: <u>{{ user.first_name }} {{user.last_name}}</u></p>-->
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <br>
+                <button class="btn btn-danger btn-sm float-end" type="submit">Logout</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock logout %}
+
+{% block content %}
+    <div class="container">
+        <!-- Login / Authenticate-->
+        <section class="page-section" id="login">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7">
+                    <div class="form-floating mb-3">
+                            {% if user.is_authenticated %}
+                                <h4 class="text-center text-uppercase text-secondary mb-0">
+                                Welcome Back, {{ user.first_name }}!<br><br>
+                                You are currently logged in.<br><br>
+                                Please select a MANAGEMENT TOOL above
+<!--                                <form method="post" action="{% url 'logout' %}">-->
+<!--                                    {% csrf_token %}-->
+<!--                                    <br>-->
+<!--                                    <button class="btn btn-secondary" type="submit">Click to Logout</button>-->
+<!--                                </form>-->
+                            {% else %}
+                                <h4 class="text-center text-uppercase text-secondary mb-0">
+                                <p>You are not logged in</p>
+                                <form action="{% url 'login' %}">
+                                    <input class="btn btn-success" type="submit" value="Log In Now" />
+                                </form>
+                            {% endif %}
+                        </h4>
+                    </div>
+                </div>
+        </section>
+    </div>
+{% endblock content %}
