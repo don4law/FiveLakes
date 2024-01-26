@@ -5,6 +5,7 @@ from django.db import models
 from managers.models import CustomUser
 from django.contrib.auth.models import User
 from datetime import datetime
+from collections import OrderedDict
 from django.db import models
 from states.models import State
 
@@ -19,12 +20,19 @@ class Applicant(models.Model):
         each_state = (state.state_abbrev, state.state_abbrev)
         STATE_CHOICES.append(each_state)
 
-    states_list = State.objects.all().distinct().order_by('manager')
-    MANAGER_OPTIONS = []
+    # LIST FOR MANAGER OPTIONS
+    states_list = State.objects.all().order_by('manager')
+    # Create list of managers
+    temp_list = []
     for state in states_list:
-        each_manager = (state.manager, state.manager)
+        temp_list.append(state.manager)
+    manager_list = list(OrderedDict.fromkeys(temp_list))
+    # manager_list = []
+    # [manager_list.append(manager) for manager in temp_list if manager not in manager_list]
+    MANAGER_OPTIONS = []
+    for manager in manager_list:
+        each_manager = (manager, manager)
         MANAGER_OPTIONS.append(each_manager)
-
 
     # Provide possible selections for attorney employment
     # Based on State Profile

@@ -27,8 +27,6 @@ class Applicant_Form(ModelForm):
                        css_class='form-group col-md-2 mb-0'),
                 Column('position',
                        css_class='form-group col-md-2 mb-0'),
-                Column('manager',
-                       css_class='form-group col-md-2 mb-0'),
             ),
             Row(
                 Column('five_lakes_firm',
