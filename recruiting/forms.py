@@ -27,6 +27,68 @@ class Applicant_Form(ModelForm):
                        css_class='form-group col-md-2 mb-0'),
                 Column('position',
                        css_class='form-group col-md-2 mb-0'),
+                Column('manager',
+                       css_class='form-group col-md-2 mb-0'),
+            ),
+            Row(
+                Column('five_lakes_firm',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('huron_firm',
+                       css_class='form-group col-md-2 mb-0'),
+            ),
+            Row(
+                Column('gender',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('first_name',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('middle_name',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('last_name',
+                       css_class='form-group col-md-4 mb-0'),
+                ),
+            Row(
+                Column('phone',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('email',
+                       css_class='form-group col-md-8 mb-0'),
+            ),
+            Row(
+                Column('source',
+                       css_class='form-group col-md-3 mb-0'),
+                Column('employee_referral_name',
+                       css_class='form-group col-md-3 mb-0'),
+                Column('salary',
+                       css_class='form-group col-md-2 mb-0'),
+            ),
+            Row(
+                Column('resume',
+                       css_class='form-group col-md-12 mb-0'),
+            ),
+            Row(
+                Column('initial_notes',
+                       css_class='form-group col-md-12 mb-0'),
+            ),
+        )
+
+class Applicant_Edit(ModelForm):
+
+    class Meta:
+        model = Applicant
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('state_abbrev',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('position',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('manager',
+                       css_class='form-group col-md-2 mb-0'),
             ),
             Row(
                 Column('five_lakes_firm',

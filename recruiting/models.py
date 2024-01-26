@@ -1,0 +1,79 @@
+# recruiting.models
+
+from django.conf import settings
+from django.db import models
+from managers.models import CustomUser
+from django.contrib.auth.models import User
+from datetime import datetime
+from django.db import models
+from states.models import State
+
+class Applicant(models.Model):
+    class Meta:
+        verbose_name = "Applicant"
+        verbose_name_plural = "Applicants"
+
+    states = State.objects.order_by('state_abbrev')
+    STATE_CHOICES = []
+    for state in states:
+        each_state = (state.state_abbrev, state.state_abbrev)
+        STATE_CHOICES.append(each_state)
+
+    states_list = State.objects.all().distinct().order_by('manager')
+    MANAGER_OPTIONS = []
+    for state in states_list:
+        each_manager = (state.manager, state.manager)
+        MANAGER_OPTIONS.append(each_manager)
+
+
+    # Provide possible selections for attorney employment
+    # Based on State Profile
+    EMPLOYMENT_OPTIONS = [
+        ('Full-Time', 'Full-Time'),
+        ('Part-Time', 'Part-Time'),
+        ('Of Counsel', 'Of Counsel'),
+        ('Floater', 'Floater'),
+    ]
+
+    SOURCE_OPTIONS = [
+        ('Indeed', 'Indeed'),
+        ('Linked In', 'Linked In'),
+        ('Recruiter', 'Recruiter'),
+        ('Employee Referral', 'Employee Referral'),
+    ]
+
+    FIRM_OPTIONS = [
+        ('Huron Law Group', 'Huron Law Group'),
+        ('Five Lakes Law Group', 'Five Lakes Law Group'),
+    ]
+
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female')
+    ]
+
+    state_abbrev = models.CharField("State", max_length=25,
+        choices = STATE_CHOICES, blank=False, null=True)
+    position = models.CharField("Position", max_length=25,
+        choices = EMPLOYMENT_OPTIONS, blank=True, null=False, default="Full-Time")
+    manager = models.CharField("Manager", max_length=50,
+        choices = MANAGER_OPTIONS, blank=True, null=False, default="")
+    source = models.CharField("Recruitment Source", max_length=25,
+        choices = SOURCE_OPTIONS, blank=True, null=True)
+    employee_referral_name = models.CharField("Referral Employee", max_length=100, blank=True, null=True)
+    gender = models.CharField("Gender", max_length=10,
+        choices = GENDER_CHOICES, blank=False, null=True)
+    first_name = models.CharField("First Name", max_length=25, blank=False, null=False)
+    middle_name = models.CharField("Middle Name", max_length=25, blank=True, null=False)
+    last_name = models.CharField("Last Name", max_length=25, blank=False, null=False)
+    phone = models.CharField("Phone Number", max_length=15, blank=True, null=True)
+    email = models.EmailField("Email", max_length=254, blank=True, null=True)
+    five_lakes_firm = models.BooleanField("Five Lakes Law Group", default=True)
+    huron_firm = models.BooleanField("Huron Law Group", default=False)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    initial_notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.last_name + ", " + first_name + " " + middle_name
+
+
