@@ -9,7 +9,7 @@ urlpatterns = [
     path('add_applicant', views.add_applicant, name="add_applicant"),
     path('edit_applicant/<pk>/', views.edit_applicant, name="edit_applicant"),
     path('applicant_delete/<pk>/', views.applicant_delete, name="applicant_delete"),
-    path('applicant_detail', views.applicant_detail, name="applicant_detail"),
+    path('applicant_detail/<pk>/', views.applicant_detail, name="applicant_detail"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
