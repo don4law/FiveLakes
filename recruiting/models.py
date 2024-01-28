@@ -1,13 +1,31 @@
 # recruiting.models
 
 from django.conf import settings
+from urllib import request
+
+from django.db.models import OneToOneField
+
+from managers.models import CustomUser
+from django.contrib.auth.models import User
+from datetime import datetime, date
+from collections import OrderedDict
 from django.db import models
 from managers.models import CustomUser
 from django.contrib.auth.models import User
-from datetime import datetime
-from collections import OrderedDict
-from django.db import models
 from states.models import State
+
+def get_managers():
+    try:
+        managers = CustomUser.objects.all().order_by('first_name', 'last_name')
+        manager_list = []
+        for manager in managers:
+            manager_name = manager.first_name + " " + manager.last_name
+            manager_tuple = (manager_name, manager_name)
+            manager_list.append(manager_tuple)
+    except:
+        manager_list = []
+    return manager_list
+
 
 class Applicant(models.Model):
     class Meta:
@@ -84,4 +102,23 @@ class Applicant(models.Model):
     def __str__(self):
         return self.last_name + ", " + self.first_name + " " + self.middle_name
 
+class Interview1(models.Model):
+    class Meta:
+        verbose_name = "First Interview"
+        verbose_name_plural = "First Interview"
+
+    MANAGER_CHOICES = get_managers()
+
+    # manager_name = manager_user.first_name + " " + manager_user.last_name
+
+    applicant = models.OneToOneField(Applicant, primary_key=True, on_delete=models.CASCADE)
+    interview1_scheduled = models.BooleanField("First Interview Scheduled", default=False)
+    interview1_date = models.DateField("First Interview Date", default=date.today, blank=True, null=True)
+    interviewer1_manager = models.CharField("Interviewer", max_length=25,
+        choices = MANAGER_CHOICES, blank=True, null=True)
+    interview1_completed = models.BooleanField("First Interview Completed", default=False)
+    interview1_notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.interview1_date, self.interview1_completed
 

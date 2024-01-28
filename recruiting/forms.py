@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
     Field, HTML
 from states.models import get_managers
-from recruiting.models import Applicant
+from recruiting.models import Applicant, Interview1
 
 # Alphabetized list of managers for choices
 managers=get_managers()
@@ -125,5 +125,37 @@ class Applicant_Edit(ModelForm):
             Row(
                 Column('initial_notes',
                        css_class='form-group col-md-12 mb-0'),
+            ),
+        )
+
+class Interview1_Form(ModelForm):
+
+    class Meta:
+        model = Interview1
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                # Column('applicant_id',
+                #        css_class='form-group col-md-4 mb-0'),
+                Column('interview1_scheduled',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('interview1_date',
+                       css_class='form-group col-md-4 mb-0'),
+            ),
+            Row(
+                Column('interview1_notes',
+                       css_class='form-group col-md-8 mb-0'),
+                Column('interviewer1_manager',
+                       css_class='form-group col-md-8 mb-0'),
+            ),
+            Row(
+                Column('interview1_completed',
+                       css_class='form-group col-md-4 mb-0'),
             ),
         )
