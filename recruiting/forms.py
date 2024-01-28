@@ -115,8 +115,6 @@ class Applicant_Edit(ModelForm):
                        css_class='form-group col-md-3 mb-0'),
                 Column('employee_referral_name',
                        css_class='form-group col-md-3 mb-0'),
-                Column('salary',
-                       css_class='form-group col-md-2 mb-0'),
             ),
             Row(
                 Column('resume',
