@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date
 from states.models import State
 from FiveLakes.settings import BASE_DIR
-from recruiting.models import Applicant, Interview1
+from recruiting.models import Applicant, Interview1_Model
 from recruiting.forms import Applicant_Form, Applicant_Edit, Interview1_Form
 
 
@@ -87,25 +87,22 @@ def applicant_detail(request, pk=None):
 @login_required(login_url=reverse_lazy('login'))
 def applicant_interview1(request, pk=None):
     context = {'title': 'Recruiting'}
-    applicant = Applicant.objects.get(id=pk)
+    applicant = Applicant.objects.get(pk=pk)
+    context.update({'applicant': applicant})
+    applicant_interview = Interview1_Model.objects.get_or_create(applicant_id=pk)
     # Produces a tuple with (object, creation) where creation is a boolean
     # if it was created
     if request.method == "POST":
-        form = Interview1_Form(request.POST, instance=applicant)
+        form = Interview1_Form(request.POST, instance=applicant_interview[0])
         if form.is_valid():
             obj = form.save(commit=False)
             obj.applicant_id = pk
-            form.save()
+            obj.save()
             return HttpResponseRedirect(reverse_lazy('recruiting'), context)
         else:
             print(form.errors)
             return HttpResponseRedirect(reverse_lazy('applicant_interview1', kwargs={'pk': pk}), context)
-    else:
-        applicant = Applicant.objects.get_or_create(id=pk)
-        context.update({'applicant': applicant[0]})
-        if applicant[1] == 0: # Object already exists
-            Interview1Form = Interview1_Form(instance=applicant[0])
-        else: # New object created
-            Interview1Form = Interview1_Form()
-        context.update({'interview1_form': Interview1Form})
+    else: #GET
+        form = Interview1_Form(instance=applicant_interview[0])
+        context.update({'interview1_form': form})
         return render(request, 'templates/recruiting/interview1.html', context)

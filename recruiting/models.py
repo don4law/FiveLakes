@@ -102,7 +102,8 @@ class Applicant(models.Model):
     def __str__(self):
         return self.last_name + ", " + self.first_name + " " + self.middle_name
 
-class Interview1(models.Model):
+
+class Interview1_Model(models.Model):
     class Meta:
         verbose_name = "First Interview"
         verbose_name_plural = "First Interview"
@@ -111,7 +112,7 @@ class Interview1(models.Model):
 
     # manager_name = manager_user.first_name + " " + manager_user.last_name
 
-    applicant = models.OneToOneField(Applicant, primary_key=True, on_delete=models.CASCADE)
+    applicant_id = models.IntegerField("Applicant id", blank=True, null=True)
     interview1_scheduled = models.BooleanField("First Interview Scheduled", default=False)
     interview1_date = models.DateField("First Interview Date", default=date.today, blank=True, null=True)
     interviewer1_manager = models.CharField("Interviewer", max_length=25,
@@ -122,3 +123,17 @@ class Interview1(models.Model):
     def __str__(self):
         return self.interview1_date, self.interview1_completed
 
+class Interview2(models.Model):
+    class Meta:
+        verbose_name = "Second Interview"
+        verbose_name_plural = "Second Interview"
+
+    MANAGER_CHOICES = get_managers()
+
+    # manager_name = manager_user.first_name + " " + manager_user.last_name
+
+    applicant = models.OneToOneField(Applicant, primary_key=True, on_delete=models.CASCADE)
+    interview2_scheduled = models.BooleanField("First Interview Scheduled", default=False)
+
+    def __str__(self):
+        return self.interview2_scheduled

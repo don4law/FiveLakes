@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
     Field, HTML
 from states.models import get_managers
-from recruiting.models import Applicant, Interview1
+from recruiting.models import Applicant, Interview1_Model
 
 # Alphabetized list of managers for choices
 managers=get_managers()
@@ -129,7 +129,7 @@ class Applicant_Edit(ModelForm):
 class Interview1_Form(ModelForm):
 
     class Meta:
-        model = Interview1
+        model = Interview1_Model
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
