@@ -114,11 +114,14 @@ class Interview1_Model(models.Model):
 
     applicant_id = models.IntegerField("Applicant id", blank=True, null=True)
     interview1_scheduled = models.BooleanField("First Interview Scheduled", default=False)
-    interview1_date = models.DateField("First Interview Date", default=date.today, blank=True, null=True)
+    interview1_date = models.DateField("First Interview Date", blank=True, null=True)
     interviewer1_manager = models.CharField("Interviewer", max_length=25,
         choices = MANAGER_CHOICES, blank=True, null=True)
-    interview1_completed = models.BooleanField("First Interview Completed", default=False)
     interview1_notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+    interview1_completed = models.BooleanField("First Interview Completed", default=False)
+    approved_to_continue = models.BooleanField("Approved to Continue", default=False)
+    decline_email_sent = models.BooleanField("Decline Email Sent", default=False)
+    retain_in_file = models.BooleanField("Retain in File", default=False)
 
     def __str__(self):
         return self.interview1_date, self.interview1_completed

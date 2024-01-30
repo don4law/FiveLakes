@@ -43,43 +43,76 @@
     {%  else %}
         <h5 class="text-center">{{ applicant.first_name }} {{ applicant.last_name }} Resume: N/A</h5></a>
     {%  endif %}
-    <br><br>
+
+    <!-- Links to sections on page -->
+    <div class="text-center">
+        <a href="#first_interview">First Interview</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#second_interview">Second Interview</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#final_wrap-up">Final Wrap-Up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <br>
 
     <!-- FIRST INTERVIEW -->
-    <div class="container">
+    <div class="container" id="first_interview">
         {%  if interview1.interview1_completed %}
-            <h4 class="bg-success"><u>FIRST INTERVIEW </u>
+            <h3 class="bg-success"><u>FIRST INTERVIEW </u>
                 (COMPLETED)
         {% else %}
-            <h4 class="bg-danger"><u>FIRST INTERVIEW </u>
+            <h3 class="bg-warning"><u>FIRST INTERVIEW </u>
                 (INCOMPLETE)
         {% endif %}
-        </h4>
-        <table class="table">
-            <tbody>
-                <tr>
-                    <th scope="col">Scheduled: {{ interview1.interview1_scheduled }}</th>
-                    <th scope="col">First Interview Date: {{ interview1.interview1_date }}</th>
-                </tr>
-                <tr>
-                    <th scope="col">Interviewing Manager: {{ interview1.interview1_manager }}</th>
+        </h3>
 
-                </tr>
-                <tr>
-                    <th scope="col">Notes: {{ interview1.interview1_notes }}</th>
-                </tr>
-                <tr>
-                    <th scope="col">Completed: {{ interview1.interview1_completed }}</th>
-                </tr>
-            </tbody>
-        </table>
+        <div class="p-3 row">
+            {% if interview1.interview1_scheduled %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Scheduled:</u>&nbsp;&nbsp;&nbsp<i class="fa-solid fa-check fa-xl" style="color:green"></i></h5></div>
+            {% else %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Scheduled:</u>&nbsp;&nbsp;&nbsp<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></h5></div>
+            {%  endif %}
+            <div class="p-2 col-lg border border-secondary rounded"><h5><u>First Interview Date:</u>&nbsp;&nbsp;{{ interview1.interview1_date }}</h5></div>
+        </div>
+        <div class="row p-3 pt-0">
+            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Interviewing Manager:</u>&nbsp;&nbsp;{{ interview1.interviewer1_manager }}</h5></div>
+        </div>
+        <div class="row p-3 pt-0">
+            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Notes:</u></h5><p>&nbsp;&nbsp;{{ interview1.interview1_notes }}</p></div>
+        </div>
+        <div class="row p-3 pt-0">
+            {% if interview1.approved_to_continue %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Approved to Continue:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+            {% else %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Approved to Continue:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+            {%  endif %}
+
+            <!-- Link to page to generate email text if decline to continue -->
+            {% if interview1.decline_email_sent %}
+{#                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i>&nbsp;&nbsp;&nbsp<a href="int1_decline_text/{{ applicant.id }}" target="_blank">Email Text</a></div>#}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i>&nbsp;&nbsp;&nbsp<a href="{% url 'int1_decline_text' applicant.id%}" target="_blank">Email Text</a></div>
+            {% else %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i>&nbsp;&nbsp;&nbsp<a href="{% url 'int1_decline_text' applicant.id%}" target="_blank">Email Text</a></div>
+            {%  endif %}
+
+            {% if interview1.retain_in_file %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Retain in File:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+            {% else %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Retain in File:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+            {%  endif %}
+        </div>
+        <div class="row p-3 pt-0">
+            {% if interview1.interview1_completed %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Completed:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+            {% else %}
+                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Completed:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+            {%  endif %}
+        </div>
         <a href="{% url 'applicant_interview1' pk=applicant.id %}">
             <button class="btn btn-secondary float-end" type="submit">Add / Edit Interview 1</button></a>
+    </div>
     <br><br>
 
     <!-- SECOND INTERVIEW -->
-    <div class="container">
-        <h4><u>SECOND INTERVIEW DETAILS:</u></h4>
+    <div class="container" id="second_interview">
+        <h3><u>SECOND INTERVIEW DETAILS:</u></h3>
 
     </div>
 

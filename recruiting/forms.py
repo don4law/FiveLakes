@@ -153,6 +153,14 @@ class Interview1_Form(ModelForm):
                        css_class='form-group col-md-8 mb-0'),
             ),
             Row(
+                Column('approved_to_continue',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('decline_email_sent',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('retain_in_file',
+                       css_class='form-group col-md-2 mb-0'),
+            ),
+            Row(
                 Column('interview1_completed',
                        css_class='form-group col-md-4 mb-0'),
             ),

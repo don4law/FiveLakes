@@ -1,0 +1,49 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h5 class="masthead-heading text-uppercase mb-0">Email Generation for {{ applicant.first_name }} {{ applicant.last_name }}</h5>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <h2 style="font-size: x-large; text-align:center"><b>Declining to Proceed with Application Process</b></h2>
+        <h2 style="font-size: x-large; text-align:center"><b><u>Ater First Interview For: {{ applicant.first_name}}  {{ applicant.last_name }}</b></u></h2>
+        <p style="text-align:center; font-size: x-large">(Cut and Paste to Outgoing Email)</p>
+    </div>
+    <br><br>
+    <div class="container">
+        <h5><u>Email To:</u>&nbsp;&nbsp;&nbsp;{{ applicant.email }}</h5>
+        <br>
+        <h5><u>Subject:</u>&nbsp;&nbsp;&nbsp;Your Application for {{ applicant.position }} Attorney Position</h5>
+        <br>
+        <h5><u>Content:</u></h5>
+            {% if applicant.gender == "male" %}
+                Dear Mr. {{ applicant.last_name }},
+            {% else %}
+                Dear Mr. {{ applicant.last_name }},
+            {%  endif %}
+        <br><br>
+            Thank you for your interest and for interviewing with us for the position of {{ applicant.position }}
+            with our firm. Although we were impressed with your qualifications, we have decided to
+            not proceed with a second interview at this time. We appreciate your consideration for employment
+            with our firm and, with your permission, will continue to consider you for other opportunities if and when they arise.
+        <br>
+        <br>
+            We thank you for your time and wish you well in your future endeavors.
+        </h4>
+    </div>
+    <br><br><br>
+    <div class="container">
+        <button class="btn btn-secondary float-end" onclick="self.close()">Close Window</button>
+    </div>
+{%  endblock content %}

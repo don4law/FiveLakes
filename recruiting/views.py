@@ -106,3 +106,10 @@ def applicant_interview1(request, pk=None):
         form = Interview1_Form(instance=applicant_interview[0])
         context.update({'interview1_form': form})
         return render(request, 'templates/recruiting/interview1.html', context)
+
+# Function to generate decline email text on blank page
+@login_required(login_url=reverse_lazy('login'))
+def int1_decline_text(request, pk=None):
+    applicant = Applicant.objects.get(pk=pk)
+    context = {'applicant': applicant}
+    return render(request, 'templates/recruiting/interview1_decline.html', context)

@@ -25,7 +25,8 @@
 
 {% block content %}}
     <div class="container">
-        <h4><u>Interview 1 for: {{ applicant.last_name}}, {{applicant.first_name }} ({{ applicant.state_abbrev }})</u></h4>
+        <h4><u>First Interview for: {{applicant.first_name }} {{ applicant.last_name}} ({{ applicant.state_abbrev }})</u></h4>
+    <br>
     </div>
     <div class="container">
       <form method="post">
@@ -36,6 +37,7 @@
             {{ interview1_form.non_field_errors }}
             {% crispy interview1_form %}
         </div>
+        <br><br>
         <div style="text-align: center">
             <button type="submit" class="btn btn-secondary">Save</button>
         </div>

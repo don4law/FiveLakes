@@ -11,6 +11,7 @@ urlpatterns = [
     path('applicant_delete/<pk>/', views.applicant_delete, name="applicant_delete"),
     path('applicant_detail/<pk>/', views.applicant_detail, name="applicant_detail"),
     path('applicant_interview1/<pk>/', views.applicant_interview1, name="applicant_interview1"),
+    path('int1_decline_text/<pk>/', views.int1_decline_text, name="int1_decline_text"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
