@@ -79,8 +79,8 @@ def applicant_detail(request, pk=None):
     else:
         applicant = Applicant.objects.get(id=pk)
         context.update({'applicant': applicant})
-        Interview1Form = Interview1_Form(instance=applicant)
-        context.update({'interview1_form': Interview1Form})
+        Interview1_Detail = Interview1_Model.objects.get(applicant_id=pk)
+        context.update({'interview1': Interview1_Detail})
         return render(request, 'templates/recruiting/applicant_detail.html', context)
 
 
@@ -98,7 +98,7 @@ def applicant_interview1(request, pk=None):
             obj = form.save(commit=False)
             obj.applicant_id = pk
             obj.save()
-            return HttpResponseRedirect(reverse_lazy('recruiting'), context)
+            return HttpResponseRedirect(reverse_lazy('applicant_detail', kwargs={'pk': pk}), context)
         else:
             print(form.errors)
             return HttpResponseRedirect(reverse_lazy('applicant_interview1', kwargs={'pk': pk}), context)

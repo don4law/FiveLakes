@@ -39,17 +39,50 @@
             <h5 class="text-center">email: N/A</h5>
     {%  endif %}
     {%  if applicant.resume %}
-        <h5 class="text-center"><a href="{{ applicant.resume.url }}" target="_blank">{{ applicant.last_name }} Resume</h5></a>
+        <h5 class="text-center"><a href="{{ applicant.resume.url }}" target="_blank">{{ applicant.first_name }} {{ applicant.last_name }} Resume</h5></a>
     {%  else %}
-        <h5 class="text-center">{{ applicant.last_name }} Resume: N/A</h5></a>
+        <h5 class="text-center">{{ applicant.first_name }} {{ applicant.last_name }} Resume: N/A</h5></a>
     {%  endif %}
-
-    {#    Add Interview1 Detail#}
-        <div class="container">
-        <a href="{% url 'applicant_interview1' pk=applicant.id %}">
-            <button class="btn btn-secondary" type="submit">Add / Edit Interview 1</button>
-        </a>
-    </div>
     <br><br>
+
+    <!-- FIRST INTERVIEW -->
+    <div class="container">
+        {%  if interview1.interview1_completed %}
+            <h4 class="bg-success"><u>FIRST INTERVIEW </u>
+                (COMPLETED)
+        {% else %}
+            <h4 class="bg-danger"><u>FIRST INTERVIEW </u>
+                (INCOMPLETE)
+        {% endif %}
+        </h4>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="col">Scheduled: {{ interview1.interview1_scheduled }}</th>
+                    <th scope="col">First Interview Date: {{ interview1.interview1_date }}</th>
+                </tr>
+                <tr>
+                    <th scope="col">Interviewing Manager: {{ interview1.interview1_manager }}</th>
+
+                </tr>
+                <tr>
+                    <th scope="col">Notes: {{ interview1.interview1_notes }}</th>
+                </tr>
+                <tr>
+                    <th scope="col">Completed: {{ interview1.interview1_completed }}</th>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{% url 'applicant_interview1' pk=applicant.id %}">
+            <button class="btn btn-secondary float-end" type="submit">Add / Edit Interview 1</button></a>
+    <br><br>
+
+    <!-- SECOND INTERVIEW -->
+    <div class="container">
+        <h4><u>SECOND INTERVIEW DETAILS:</u></h4>
+
+    </div>
+
+
 
 {% endblock content %}
