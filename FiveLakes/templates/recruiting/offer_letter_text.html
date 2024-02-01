@@ -1,0 +1,81 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h5 class="masthead-heading text-uppercase mb-0">Email Generation for {{ applicant.first_name }} {{ applicant.last_name }}</h5>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <h2 style="font-size: x-large; text-align:center"><b><u>Offer Letter For {{ applicant.first_name}} {{ applicant.last_name }}</b></u></h2>
+        <p style="text-align:center; font-size: x-large"><i>(Cut and Paste to Outgoing Offer Letter)</i></p>
+    </div>
+    <br><br>
+    <div class="container">
+        <h5><u>Content:</u></h5>
+        <p id="datetime">
+            <script>
+              // Get current date and time
+              var date = new Date();
+              var dateWithoutTime = date.toLocaleDateString();
+
+              // Insert date and time into HTML
+              document.getElementById("datetime").innerHTML = dateWithoutTime;
+            </script>
+        </p>
+        <p>
+           <u>Sent via email to:</u>&nbsp;&nbsp;{{ applicant.email }}
+        </p>
+        <p>
+            <b><i>Re:      Your Application for {{ applicant.state_abbrev }} {{ applicant.position }} Attorney Position</i></b>
+        </p>
+        <p>
+            Dear Attorney {{ applicant.last_name }},
+        </p>
+        <p>
+            I am pleased to extend an offer of full-time employment with Huron Law Group PLLC, for the above position.
+            The position is at-will and will start on {{ offer.start_date }}, or as soon thereafter as possible, under the following terms:
+        </p>
+        <p>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	Base salary of ${{  applicant.salary}}/year<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	10 days Paid Time Off (PTO), with increases over time<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	10 paid holidays<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	Paid bar membership(s) and malpractice insurance<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	Paid continuing legal education (if required)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	Yearly reviews with raises up to 5% annually<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	Discretionary bonuses<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	100% remote<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	Health/Dental/Vision/Disability starting within 90 days of hire.<br>
+        </p>
+        <p>We will follow up with several emails connecting you to HR and IT to get you set up.
+            Please let us know if you have any questions or concerns.
+        </p>
+        <p></p>
+        <p>Sincerely,</p>
+        <p></p>
+        <p></p>
+        <p>
+            _________________________<br>
+            Charles DeGryse<br>
+            Chief Counsel<br>
+            (248) 440-7322<br>
+            cdegryse@huronlawgroup.com
+        </p>
+        <p>
+            cc: {{ applicant.manager }}
+        </p>
+        <br><br>
+    <div class="container">
+        <button class="btn btn-secondary float-end" onclick="self.close()">Close Window</button>
+    </div>
+    <br><br>
+{%  endblock content %}

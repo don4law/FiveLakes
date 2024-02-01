@@ -78,10 +78,12 @@ class Applicant(models.Model):
         ('Female', 'Female')
     ]
 
+    is_active = models.BooleanField("Is Active", default=True)
     state_abbrev = models.CharField("State", max_length=25,
         choices = STATE_CHOICES, blank=False, null=True)
     position = models.CharField("Position", max_length=25,
         choices = EMPLOYMENT_OPTIONS, blank=True, null=False, default="Full-Time")
+    salary = models.CharField("Salary", max_length=10, default = "80,000", blank=False, null=False)
     manager = models.CharField("Manager", max_length=50,
         choices = MANAGER_OPTIONS, blank=True, null=False, default="")
     source = models.CharField("Recruitment Source", max_length=25,
@@ -126,7 +128,7 @@ class Interview1_Model(models.Model):
     def __str__(self):
         return self.interview1_date, self.interview1_completed
 
-class Interview2(models.Model):
+class Interview2_Model(models.Model):
     class Meta:
         verbose_name = "Second Interview"
         verbose_name_plural = "Second Interview"
@@ -135,8 +137,36 @@ class Interview2(models.Model):
 
     # manager_name = manager_user.first_name + " " + manager_user.last_name
 
-    applicant = models.OneToOneField(Applicant, primary_key=True, on_delete=models.CASCADE)
-    interview2_scheduled = models.BooleanField("First Interview Scheduled", default=False)
+    applicant_id = models.IntegerField("Applicant id", blank=True, null=True)
+    interview2_scheduled = models.BooleanField("Second Interview Scheduled", default=False)
+    interview2_date = models.DateField("Second Interview Date", blank=True, null=True)
+    interviewer2_manager1 = models.CharField("Interviewer #1", max_length=25,
+        choices = MANAGER_CHOICES, blank=True, null=True)
+    interview2_notes1 = models.TextField("Interviewer #1 Notes", max_length=255, blank=True, null=True)
+    interviewer2_manager2 = models.CharField("Interviewer # 2", max_length=25,
+        choices = MANAGER_CHOICES, blank=True, null=True)
+    interview2_notes2 = models.TextField("Interviewer # 2 Notes", max_length=255, blank=True, null=True)
+    interview2_completed = models.BooleanField("Second Interview Completed", default=False)
+    approved_to_continue = models.BooleanField("Approved to Continue", default=False)
+    decline_email_sent = models.BooleanField("Decline Email Sent", default=False)
+    retain_in_file = models.BooleanField("Retain in File", default=False)
 
     def __str__(self):
-        return self.interview2_scheduled
+        return self.interview1_date, self.interview2_completed
+
+class FinalStep_Model(models.Model):
+    class Meta:
+        verbose_name = "Final Applicant Steps"
+        verbose_name_plural = "Final Applicant Steps"
+
+    applicant_id = models.IntegerField("Applicant id", blank=True, null=True)
+    applicant_withdrawn = models.BooleanField("Applicant Withdrawal from Consideration", default=False)
+    offer_letter_sent_charles = models.BooleanField("Offer Letter Emailed Chief Counsel", default=False)
+    offer_letter_sent_applicant = models.BooleanField("Offer Letter Forwarded to Applicant", default=False)
+    offer_letter_email_date = models.DateField("Offer Letter Date", blank=True, null=True)
+    offer_accepted = models.BooleanField("Offer Accepted and Signed", default=False)
+    start_date = models.DateField("Start Date", blank=True, null=True)
+    completed = models.BooleanField("Completed and Ready for Onboarding", default=False)
+
+    def __str__(self):
+        return self.applicant_id

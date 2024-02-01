@@ -1,0 +1,45 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">Recruiting</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}}
+    <div class="container">
+        <h4><u>Final Wrap-Up Pre-Hiring for: {{applicant.first_name }} {{ applicant.last_name}} ({{ applicant.state_abbrev }})</u></h4>
+    <br>
+    </div>
+    <div class="container">
+      <form method="post">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ final_step_form.non_form_errors }}
+            {{ final_step_form.errors }}
+            {{ final_step_form.non_field_errors }}
+            {% crispy final_step_form %}
+        </div>
+        <br><br>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-secondary">Save</button>
+        </div>
+      </form>
+{% endblock content %}
