@@ -14,7 +14,10 @@ class Applicant_Form(ModelForm):
 
     class Meta:
         model = Applicant
-        fields = '__all__'
+        fields = ['state_abbrev', 'position', 'five_lakes_firm',
+                  'huron_firm', 'gender', 'first_name', 'middle_name',
+                  'last_name', 'phone', 'email', 'source', 'employee_referral_name',
+                  'salary', 'resume', 'initial_notes']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,7 +75,10 @@ class Applicant_Edit(ModelForm):
 
     class Meta:
         model = Applicant
-        fields = '__all__'
+        fields = ['state_abbrev', 'position', 'manager', 'five_lakes_firm',
+                  'huron_firm', 'gender', 'first_name', 'middle_name',
+                  'last_name', 'phone', 'email', 'source', 'employee_referral_name',
+                  'salary', 'resume', 'initial_notes']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

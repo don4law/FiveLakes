@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from datetime import date
+from itertools import chain
 from states.models import State
 from FiveLakes.settings import BASE_DIR
 from recruiting.models import Applicant, Interview1_Model, Interview2_Model, FinalStep_Model
@@ -21,8 +22,17 @@ def recruiting_view(request):
             context = {'form': form}
         return HttpResponseRedirect(reverse_lazy('recruiting'), context)
     else:  # GET
-        applicants = Applicant.objects.order_by('last_name')
-        context.update({'applicant_list': applicants})
+        # Get all active applicants for each step in interview process
+        applicant_new = Applicant.objects.filter(is_active=True, step='New Resume').order_by('last_name')
+        context.update({'applicant_new_list': applicant_new})
+        applicant_interview1 = Applicant.objects.filter(is_active=True, step='Interview1').order_by('last_name')
+        context.update({'interview1_list': applicant_interview1})
+        applicant_interview2 = Applicant.objects.filter(is_active=True, step='Interview2').order_by('last_name')
+        context.update({'interview2_list': applicant_interview2})
+        applicant_final = Applicant.objects.filter(is_active=True, step='Final').order_by('last_name')
+        context.update({'final_step_list': applicant_final})
+        applicant_open = Applicant.objects.filter(is_active=True, step='Open File').order_by('last_name')
+        context.update({'open_file_list': applicant_open})
         return render(request, 'templates/recruiting.html', context)
 
 
@@ -101,10 +111,15 @@ def applicant_interview1(request, pk=None):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.applicant_id = pk
+            applicant = Applicant.objects.get(pk=pk)
+            if obj.interview1_completed == False:
+                applicant.step = "Interview1"
+            else:
+                applicant.step = "Interview2"
+            applicant.save()
             obj.save()
             return HttpResponseRedirect(reverse_lazy('applicant_detail', kwargs={'pk': pk}), context)
         else:
-            print(form.errors)
             return HttpResponseRedirect(reverse_lazy('applicant_interview1', kwargs={'pk': pk}), context)
     else: #GET
         form = Interview1_Form(instance=applicant_interview[0])
@@ -131,6 +146,12 @@ def applicant_interview2(request, pk=None):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.applicant_id = pk
+            applicant = Applicant.objects.get(pk=pk)
+            if obj.interview2_completed == False:
+                applicant.step = "Interview2"
+            else:
+                applicant.step = "Final"
+            applicant.save()
             obj.save()
             return HttpResponseRedirect(reverse_lazy('applicant_detail', kwargs={'pk': pk}), context)
         else:
@@ -148,13 +169,6 @@ def int2_decline_text(request, pk=None):
     return render(request, 'templates/recruiting/interview2_decline.html', context)
 
 
-# @login_required(login_url=reverse_lazy('login'))
-# def final_wrapup(request, pk=None):
-#     applicant = Applicant.objects.get(pk=pk)
-#     context = {'applicant': applicant}
-#     return render(request, 'templates/recruiting/final_wrapup.html', context)
-
-
 @login_required(login_url=reverse_lazy('login'))
 def applicant_final_step(request, pk=None):
     context = {'title': 'Recruiting'}
@@ -168,6 +182,12 @@ def applicant_final_step(request, pk=None):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.applicant_id = pk
+            applicant = Applicant.objects.get(pk=pk)
+            if obj.completed == True:
+                applicant.step = "Final"
+            else:
+                applicant.step = "Open File"
+            applicant.save()
             obj.save()
             return HttpResponseRedirect(reverse_lazy('applicant_detail', kwargs={'pk': pk}), context)
         else:

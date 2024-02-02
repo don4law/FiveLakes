@@ -25,7 +25,7 @@
 
 {% block content %}}
     <div class="container">
-        <h3 class=" text-center text-uppercase">Application Detail for: <u>{{ applicant.first_name }} {{ applicant.middle_name }}{{ applicant.last_name }} ({{ applicant.state_abbrev }}-{{ applicant.position }})</u></h3>
+        <h3 class=" text-center text-uppercase">Application Detail for: <a href="{% url 'edit_applicant' pk=applicant.id %}">{{ applicant.first_name }} {{ applicant.middle_name }}{{ applicant.last_name }} ({{ applicant.state_abbrev }}-{{ applicant.position }})</a></h3>
     </div>
     <div class="container">
         {%  if applicant.phone %}
@@ -47,8 +47,12 @@
     <!-- Links to sections on page -->
     <div class="text-center">
         <a href="#first_interview">First Interview</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#second_interview">Second Interview</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#final_step">Final Wrap-Up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {%  if interview1.interview1_completed %}
+            <a href="#second_interview">Second Interview</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {% endif %}
+        {%  if interview1.interview1_completed and interview2.interview2_completed %}
+            <a href="#final_step">Final Wrap-Up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {%  endif %}
     </div>
     <br>
 
@@ -110,132 +114,139 @@
     </div>
     <br><br>
     <hr>
-    <!-- SECOND INTERVIEW -->
-    <div class="container" id="second_interview">
-        {%  if interview2.interview2_completed %}
-            <h3 class="bg-success"><u>SECOND INTERVIEW </u>
-                (COMPLETED)
-        {% else %}
-            <h3 class="bg-warning"><u>SECOND INTERVIEW </u>
-                (INCOMPLETE)
-        {% endif %}
-        </h3>
 
-        <div class="p-3 row">
-            {% if interview2.interview2_scheduled %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Scheduled:</u>&nbsp;&nbsp;&nbsp<i class="fa-solid fa-check fa-xl" style="color:green"></i></h5></div>
+    <!-- If First Interview is completed, display Second Interview -->
+    {%  if interview1.interview1_completed %}
+        <!-- SECOND INTERVIEW -->
+        <div class="container" id="second_interview">
+            {%  if interview2.interview2_completed %}
+                <h3 class="bg-success"><u>SECOND INTERVIEW </u>
+                    (COMPLETED)
             {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Scheduled:</u>&nbsp;&nbsp;&nbsp<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></h5></div>
-            {%  endif %}
-            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Second Interview Date:</u>&nbsp;&nbsp;{{ interview2.interview2_date }}</h5></div>
-        </div>
-        <div class="row p-3 pt-0">
-            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Interviewing Manager #1:</u>&nbsp;&nbsp;{{ interview2.interviewer2_manager1 }}</h5></div>
-        </div>
-        <div class="row p-3 pt-0">
-            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Notes:</u></h5><p>&nbsp;&nbsp;{{ interview2.interview2_notes1 }}</p></div>
-        </div>
-        <hr>
+                <h3 class="bg-warning"><u>SECOND INTERVIEW </u>
+                    (INCOMPLETE)
+            {% endif %}
+            </h3>
+
+            <div class="p-3 row">
+                {% if interview2.interview2_scheduled %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Scheduled:</u>&nbsp;&nbsp;&nbsp<i class="fa-solid fa-check fa-xl" style="color:green"></i></h5></div>
+                {% else %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Scheduled:</u>&nbsp;&nbsp;&nbsp<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></h5></div>
+                {%  endif %}
+                <div class="p-2 col-lg border border-secondary rounded"><h5><u>Second Interview Date:</u>&nbsp;&nbsp;{{ interview2.interview2_date }}</h5></div>
+            </div>
             <div class="row p-3 pt-0">
-            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Interviewing Manager #2:</u>&nbsp;&nbsp;{{ interview2.interviewer2_manager2 }}</h5></div>
-        </div>
-        <div class="row p-3 pt-0">
-            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Notes:</u></h5><p>&nbsp;&nbsp;{{ interview2.interview2_notes2 }}</p></div>
-        </div>
-    <hr>
-        <div class="row p-3 pt-0">
-            {% if interview2.approved_to_continue %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Approved to Continue:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Approved to Continue:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
+                <div class="p-2 col-lg border border-secondary rounded"><h5><u>Interviewing Manager #1:</u>&nbsp;&nbsp;{{ interview2.interviewer2_manager1 }}</h5></div>
+            </div>
+            <div class="row p-3 pt-0">
+                <div class="p-2 col-lg border border-secondary rounded"><h5><u>Notes:</u></h5><p>&nbsp;&nbsp;{{ interview2.interview2_notes1 }}</p></div>
+            </div>
+            <hr>
+                <div class="row p-3 pt-0">
+                <div class="p-2 col-lg border border-secondary rounded"><h5><u>Interviewing Manager #2:</u>&nbsp;&nbsp;{{ interview2.interviewer2_manager2 }}</h5></div>
+            </div>
+            <div class="row p-3 pt-0">
+                <div class="p-2 col-lg border border-secondary rounded"><h5><u>Notes:</u></h5><p>&nbsp;&nbsp;{{ interview2.interview2_notes2 }}</p></div>
+            </div>
+            <hr>
+            <div class="row p-3 pt-0">
+                {% if interview2.approved_to_continue %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Approved to Continue:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                {% else %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Approved to Continue:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                {%  endif %}
 
-            <!-- Link to page to generate email text if decline to continue -->
-            {% if interview2.decline_email_sent %}
-{#                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i>&nbsp;&nbsp;&nbsp<a href="int1_decline_text/{{ applicant.id }}" target="_blank">Email Text</a></div>#}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i>&nbsp;&nbsp;&nbsp<a href="{% url 'int2_decline_text' applicant.id%}" target="_blank">Email Text</a></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i>&nbsp;&nbsp;&nbsp<a href="{% url 'int2_decline_text' applicant.id%}" target="_blank">Email Text</a></div>
-            {%  endif %}
+                <!-- Link to page to generate email text if decline to continue -->
+                {% if interview2.decline_email_sent %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i>&nbsp;&nbsp;&nbsp<a href="{% url 'int2_decline_text' applicant.id%}" target="_blank">Email Text</a></div>
+                {% else %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Decline Email Sent:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i>&nbsp;&nbsp;&nbsp<a href="{% url 'int2_decline_text' applicant.id%}" target="_blank">Email Text</a></div>
+                {%  endif %}
 
-            {% if interview2.retain_in_file %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Retain in File:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Retain in File:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
+                {% if interview2.retain_in_file %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Retain in File:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                {% else %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Retain in File:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                {%  endif %}
+            </div>
+            <div class="row p-3 pt-0">
+                {% if interview2.interview2_completed %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Completed:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                {% else %}
+                    <div class="p-2 col-sm border border-secondary rounded"><h5><u>Completed:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                {%  endif %}
+            </div>
+            <a href="{% url 'applicant_interview2' pk=applicant.id %}">
+                <button class="btn btn-secondary float-end" type="submit">Add / Edit SECOND Interview</button></a>
         </div>
-        <div class="row p-3 pt-0">
-            {% if interview2.interview2_completed %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Completed:</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Completed:</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
-        </div>
-        <a href="{% url 'applicant_interview2' pk=applicant.id %}">
-            <button class="btn btn-secondary float-end" type="submit">Add / Edit SECOND Interview</button></a>
-    </div>
-    <br><br>
-    <hr>
-    <!-- FINAL WRAP-UP STEP -->
-    <div class="container" id="final_step">
-        {%  if final_step.completed %}
-            <h3 class="bg-success"><u>FINAL WRAP-UP STEP </u>
-                (COMPLETED)
-        {% else %}
-            <h3 class="bg-warning"><u>FINAL WRAP-UP STEP </u>
-                (INCOMPLETE)
-        {% endif %}
-        </h3>
-            {% if final_step.applicant_withdrawn %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Applicant Has Withdrawn from Process: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Applicant Has Withdrawn from Process: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
-        <div class="row p-3 pt-0">
-            <div class="p-2 col-lg border border-secondary rounded"><h5><u>Start-Date: </u>&nbsp;&nbsp;{{ final_step.start_date }}</h5></div>
-        </div>
-            <div class ="container">
-            <h5><a href="{% url 'offer_letter_text' applicant.id%}" target="_blank">Generate Offer Letter Text</a></h5>
-        </div>
-        <div class="row p-3 pt-0">
-            {% if final_step.offer_letter_sent_charles %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Letter Sent to Chief Counsel: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Letter Sent to Chief Counsel: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
-
-            {% if final_step.offer_letter_sent_applicant %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent to Applicant: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent to Applicant: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
-
-            {% if final_step.offer_letter_email_date %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
-        </div>
-        <div class="row p-3 pt-0">
-            {% if final_step.completed %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>COMPLETED AND READY FOR ONBOARDING</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
-            {% else %}
-                <div class="p-2 col-sm border border-secondary rounded"><h5><u>COMPLETED AND READY FOR ONBOARDING</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
-            {%  endif %}
-        </div>
-
-        <a href="{% url 'applicant_final_step' pk=applicant.id %}">
-            <button class="btn btn-secondary float-end" type="submit">Add / Edit FINAL STEP</button></a>
-    </div>
-    <br><br>
-    <hr>
-    <div class="text-center">
-            {%  if final_step.completed %}
-                <a href="{% url 'create_employee_file' pk=applicant.id %}">
-                    <button class="btn text-bg-success btn-lg" type="submit"><b>CREATE EMPLOYEE FILE</b></button></a>
-            {% else %}
-                    <button class="btn text-bg-success btn-lg disabled" type="submit"><b>CREATE EMPLOYEE FILE</b></button>
-            {%  endif %}
         <br><br>
+        <hr>
+
+        <!-- If First Interview is completed, display Second Interview -->
+        {%  if interview1.interview1_completed and interview2.interview2_completed %}
+            <!-- FINAL WRAP-UP STEP -->
+            <div class="container" id="final_step">
+                {%  if final_step.completed %}
+                    <h3 class="bg-success"><u>FINAL WRAP-UP STEP </u>
+                        (COMPLETED)
+                {% else %}
+                    <h3 class="bg-warning"><u>FINAL WRAP-UP STEP </u>
+                        (INCOMPLETE)
+                {% endif %}
+                </h3>
+                    {% if final_step.applicant_withdrawn %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Applicant Has Withdrawn from Process: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                    {% else %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Applicant Has Withdrawn from Process: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                    {%  endif %}
+                <div class="row p-3 pt-0">
+                    <div class="p-2 col-lg border border-secondary rounded"><h5><u>Start-Date: </u>&nbsp;&nbsp;{{ final_step.start_date }}</h5></div>
+                </div>
+                    <div class ="container">
+                    <h5><a href="{% url 'offer_letter_text' applicant.id%}" target="_blank">Generate Offer Letter Text</a></h5>
+                </div>
+                <div class="row p-3 pt-0">
+                    {% if final_step.offer_letter_sent_charles %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Letter Sent to Chief Counsel: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                    {% else %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Letter Sent to Chief Counsel: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                    {%  endif %}
+
+                    {% if final_step.offer_letter_sent_applicant %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent to Applicant: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                    {% else %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent to Applicant: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                    {%  endif %}
+
+                    {% if final_step.offer_letter_email_date %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                    {% else %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                    {%  endif %}
+                </div>
+                <div class="row p-3 pt-0">
+                    {% if final_step.completed %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>COMPLETED AND READY FOR ONBOARDING</u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                    {% else %}
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>COMPLETED AND READY FOR ONBOARDING</u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                    {%  endif %}
+                </div>
+
+                <a href="{% url 'applicant_final_step' pk=applicant.id %}">
+                    <button class="btn btn-secondary float-end" type="submit">Add / Edit FINAL STEP</button></a>
+            </div>
+            <br><br>
+            <hr>
+            <div class="text-center">
+                    {%  if final_step.completed %}
+                        <a href="{% url 'create_employee_file' pk=applicant.id %}">
+                            <button class="btn text-bg-success btn-lg" type="submit"><b>CREATE EMPLOYEE FILE</b></button></a>
+                    {% else %}
+                            <button class="btn text-bg-success btn-lg disabled" type="submit"><b>CREATE EMPLOYEE FILE</b></button>
+                    {%  endif %}
+                <br><br>
+        {% endif %}
+    {% endif %}
     </div>
 {% endblock content %}

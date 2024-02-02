@@ -78,7 +78,15 @@ class Applicant(models.Model):
         ('Female', 'Female')
     ]
 
-    is_active = models.BooleanField("Is Active", default=True)
+    STEP_CHOICES = [
+        ('New Resume', 'New Resume'),
+        ('Interview1', 'Interview1'),
+        ('Interview2', 'Interview2'),
+        ('Final', 'Final'),
+        ('Open File', 'Open File')
+    ]
+
+    is_active = models.BooleanField("Is Active", default=True, blank=True, null=True)
     state_abbrev = models.CharField("State", max_length=25,
         choices = STATE_CHOICES, blank=False, null=True)
     position = models.CharField("Position", max_length=25,
@@ -86,6 +94,8 @@ class Applicant(models.Model):
     salary = models.CharField("Salary", max_length=10, default = "80,000", blank=False, null=False)
     manager = models.CharField("Manager", max_length=50,
         choices = MANAGER_OPTIONS, blank=True, null=False, default="")
+    step = models.CharField("Step", max_length=25,
+        choices = STEP_CHOICES, default="New Resume", blank=False, null=True)
     source = models.CharField("Recruitment Source", max_length=25,
         choices = SOURCE_OPTIONS, blank=True, null=True)
     employee_referral_name = models.CharField("Referral Employee", max_length=100, blank=True, null=True)
