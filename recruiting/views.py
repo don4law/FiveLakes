@@ -7,32 +7,104 @@ from datetime import date
 from itertools import chain
 from states.models import State
 from FiveLakes.settings import BASE_DIR
-from recruiting.models import Applicant, Interview1_Model, Interview2_Model, FinalStep_Model
-from recruiting.forms import Applicant_Form, Applicant_Edit, Interview1_Form, Interview2_Form, FinalStep_Form
+from recruiting.models import Applicant, Interview1_Model, Interview2_Model, FinalStep_Model, Search_Model
+from recruiting.forms import (Applicant_Form, Applicant_Edit, Interview1_Form, Interview2_Form,
+                              FinalStep_Form, Search_Form)
 
 
 @login_required(login_url=reverse_lazy('login'))
 def recruiting_view(request):
     context = {'title': 'Recruiting'}
+    search_db = Search_Model.objects.get_or_create(pk=1)
+    search_id = search_db[0]
     if request.method == "POST":
-        form = Applicant_Form(request.POST, request.FILES)
+        form = Search_Form(request.POST, instance=search_id)
         if form.is_valid():
             form.save()
         else:
             context = {'form': form}
         return HttpResponseRedirect(reverse_lazy('recruiting'), context)
     else:  # GET
-        # Get all active applicants for each step in interview process
-        applicant_new = Applicant.objects.filter(is_active=True, step='New Resume').order_by('last_name')
-        context.update({'applicant_new_list': applicant_new})
-        applicant_interview1 = Applicant.objects.filter(is_active=True, step='Interview1').order_by('last_name')
-        context.update({'interview1_list': applicant_interview1})
-        applicant_interview2 = Applicant.objects.filter(is_active=True, step='Interview2').order_by('last_name')
-        context.update({'interview2_list': applicant_interview2})
-        applicant_final = Applicant.objects.filter(is_active=True, step='Final').order_by('last_name')
-        context.update({'final_step_list': applicant_final})
-        applicant_open = Applicant.objects.filter(is_active=True, step='Open File').order_by('last_name')
-        context.update({'open_file_list': applicant_open})
+        # Get search form
+        searchForm = Search_Form()
+        context.update({'searchForm': searchForm})
+
+        search_criteria = Search_Model.objects.get_or_create(pk=1)
+        # clear search box
+        Search_Model.objects.filter(pk=1).delete()
+
+        if search_criteria[0].search_manager:
+            # Get all active applicants for each step in interview process
+            applicant_new = Applicant.objects.filter(is_active=True, step='New Resume', manager=search_criteria[0].search_manager).order_by('last_name')
+            context.update({'applicant_new_list': applicant_new})
+
+            applicant_interview1 = Applicant.objects.filter(is_active=True, step='Interview1', manager=search_criteria[0].search_manager).order_by('last_name')
+            context.update({'interview1_list': applicant_interview1})
+
+            applicant_interview2 = Applicant.objects.filter(is_active=True, step='Interview2', manager=search_criteria[0].search_manager).order_by('last_name')
+            context.update({'interview2_list': applicant_interview2})
+
+            applicant_final = Applicant.objects.filter(is_active=True, step='Final', manager=search_criteria[0].search_manager).order_by('last_name')
+            context.update({'final_step_list': applicant_final})
+
+            applicant_open = Applicant.objects.filter(is_active=True, step='Open File', manager=search_criteria[0].search_manager).order_by('last_name')
+            context.update({'open_file_list': applicant_open})
+
+        # Search by State
+        elif search_criteria[0].search_state:
+            # Get all active applicants for each step in interview process
+            applicant_new = Applicant.objects.filter(is_active=True, step='New Resume', state_abbrev=search_criteria[0].search_state).order_by('last_name')
+            context.update({'applicant_new_list': applicant_new})
+
+            applicant_interview1 = Applicant.objects.filter(is_active=True, step='Interview1', state_abbrev=search_criteria[0].search_state).order_by('last_name')
+            context.update({'interview1_list': applicant_interview1})
+
+            applicant_interview2 = Applicant.objects.filter(is_active=True, step='Interview2', state_abbrev=search_criteria[0].search_state).order_by('last_name')
+            context.update({'interview2_list': applicant_interview2})
+
+            applicant_final = Applicant.objects.filter(is_active=True, step='Final', state_abbrev=search_criteria[0].search_state).order_by('last_name')
+            context.update({'final_step_list': applicant_final})
+
+            applicant_open = Applicant.objects.filter(is_active=True, step='Open File', state_abbrev=search_criteria[0].search_state).order_by('last_name')
+            context.update({'open_file_list': applicant_open})
+
+        # Search by Step in Recruitment Process
+        elif search_criteria[0].search_step:
+            # Get all active applicants for each step in interview process
+            if search_criteria[0].search_step == "New Resume":
+                applicant_new = Applicant.objects.filter(is_active=True, step=search_criteria[0].search_step).order_by('last_name')
+                context.update({'applicant_new_list': applicant_new})
+            elif search_criteria[0].search_step == "Interview1":
+                applicant_interview1 = Applicant.objects.filter(is_active=True, step=search_criteria[0].search_step).order_by('last_name')
+                context.update({'interview1_list': applicant_interview1})
+            elif search_criteria[0].search_step == "Interview2":
+                applicant_interview2 = Applicant.objects.filter(is_active=True, step=search_criteria[0].search_step).order_by('last_name')
+                context.update({'interview2_list': applicant_interview2})
+            elif search_criteria[0].search_step == "Final":
+                applicant_final = Applicant.objects.filter(is_active=True, step=search_criteria[0].search_step).order_by('last_name')
+                context.update({'final_step_list': applicant_final})
+            elif search_criteria[0].search_step == "Open File":
+                applicant_open = Applicant.objects.filter(is_active=True, step=search_criteria[0].search_step).order_by('last_name')
+                context.update({'open_file_list': applicant_open})
+
+        # No criteria entered
+        else:
+            # Get all active applicants for each step in interview process
+            applicant_new = Applicant.objects.filter(is_active=True, step='New Resume').order_by('last_name')
+            context.update({'applicant_new_list': applicant_new})
+
+            applicant_interview1 = Applicant.objects.filter(is_active=True, step='Interview1').order_by('last_name')
+            context.update({'interview1_list': applicant_interview1})
+
+            applicant_interview2 = Applicant.objects.filter(is_active=True, step='Interview2').order_by('last_name')
+            context.update({'interview2_list': applicant_interview2})
+
+            applicant_final = Applicant.objects.filter(is_active=True, step='Final').order_by('last_name')
+            context.update({'final_step_list': applicant_final})
+
+            applicant_open = Applicant.objects.filter(is_active=True, step='Open File').order_by('last_name')
+            context.update({'open_file_list': applicant_open})
+
         return render(request, 'templates/recruiting.html', context)
 
 

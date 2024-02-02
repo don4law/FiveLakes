@@ -24,6 +24,22 @@
 {% endblock header %}
 
 {% block content %}
+    {# SEARCH FORM#}
+    <div class="container">
+    <br>
+      <form method="post">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ searchForm.non_form_errors }}
+            {% crispy searchForm %}
+        </div>
+        <div style="float: right">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+      </form>
+    </div>
+    <br><br>
+
     <div class="container">
         <a href="{% url 'add_applicant' %}">
             <button class="btn btn-secondary" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add New Applicant</button>
@@ -67,7 +83,7 @@
             </tbody>
         </table>
     <br>
-
+    </div>
 <!-- First Interview not Completed -->
     <div class="container">
         <h5><u>FIRST INTERVIEWS DUE</u></h5>
@@ -182,7 +198,7 @@
     <br>
     </div>
 
-<!-- OPEN FILE AND BEGIN ONBOARDING -->
+    <!-- OPEN FILE AND BEGIN ONBOARDING -->
     <div class="container">
         <h5><u>OPEN FILE AND BEGIN ONBOARDING</u></h5>
         <table class="table">

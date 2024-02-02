@@ -180,3 +180,31 @@ class FinalStep_Model(models.Model):
 
     def __str__(self):
         return self.applicant_id
+
+class Search_Model(models.Model):
+    class Meta:
+        verbose_name = "Search"
+        verbose_name_plural = "Search"
+
+    MANAGER_CHOICES = get_managers()
+
+    states = State.objects.order_by('state_abbrev')
+    STATE_CHOICES = []
+    for state in states:
+        each_state = (state.state_abbrev, state.state_abbrev)
+        STATE_CHOICES.append(each_state)
+
+    STEP_CHOICES = [
+        ('New Resume', 'New Resume'),
+        ('Interview1', 'Interview1'),
+        ('Interview2', 'Interview2'),
+        ('Final', 'Final'),
+        ('Open File', 'Open File')
+    ]
+
+    search_manager = models.CharField("Search by Manager", max_length=25,
+        choices = MANAGER_CHOICES, blank=True, null=True)
+    search_state = models.CharField("Search by State", max_length=25,
+        choices = STATE_CHOICES, blank=True, null=True)
+    search_step = models.CharField("Search by Step", max_length=25,
+        choices = STEP_CHOICES, blank=True, null=True)

@@ -5,7 +5,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
     Field, HTML
 from states.models import get_managers
-from recruiting.models import Applicant, Interview1_Model, Interview2_Model, FinalStep_Model
+from recruiting.models import (Applicant, Interview1_Model, Interview2_Model,
+                               FinalStep_Model, Search_Model)
 
 # Alphabetized list of managers for choices
 managers=get_managers()
@@ -252,6 +253,27 @@ class FinalStep_Form(ModelForm):
             ),
             Row(
                 Column('completed',
+                       css_class='form-group col-md-4 mb-0'),
+            ),
+        )
+
+class Search_Form(ModelForm):
+    class Meta:
+        model = Search_Model
+        fields = ['search_manager', 'search_state', 'search_step']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('search_manager',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('search_state',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('search_step',
                        css_class='form-group col-md-4 mb-0'),
             ),
         )
