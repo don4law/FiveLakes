@@ -188,7 +188,7 @@ class Search_Model(models.Model):
 
     MANAGER_CHOICES = get_managers()
 
-    states = State.objects.order_by('state_abbrev')
+    states = State.objects.all().order_by('state_abbrev')
     STATE_CHOICES = []
     for state in states:
         each_state = (state.state_abbrev, state.state_abbrev)

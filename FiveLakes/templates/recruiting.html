@@ -45,11 +45,9 @@
             <button class="btn btn-secondary" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add New Applicant</button>
         </a>
     </div>
-    <br><br>
 
 <!-- New Resumes -->
     <div class="container">
-        <h5><u>NEW APPLICANTS / RESUMES</u></h5>
         <table class="table">
             <thead>
                 <tr>
@@ -64,176 +62,157 @@
                 </tr>
             </thead>
             <tbody>
-                {% for applicant in applicant_new_list %}
                 <tr>
-                    <td>{{applicant.state_abbrev}}</td>
-                    <td>{{applicant.position}}</td>
-                    <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
-                    <td>{{ applicant.manager}}</td>
-                    <td>{{ applicant.step}}</td>
-                    {%  if applicant.resume %}
-                        <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                    {%  else %}
-                        <td class="text-center">N/A</td></a>
-                    {%  endif %}
-                    <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                    <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                    <th colspan="8" style="background-color: #0dcaf0; font-size: x-large"><b><u>NEW APPLICANTS / RESUMES</u></b></th>
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    <br>
-    </div>
-<!-- First Interview not Completed -->
-    <div class="container">
-        <h5><u>FIRST INTERVIEWS DUE</u></h5>
-        <table class="table">
-            <thead>
+                {%  if not applicant_new_list %}
+                    <tr>
+                        <td colspan="8">NONE</td>
+                    </tr>
+                {%  else %}
+                    {% for applicant in applicant_new_list %}
+                    <tr>
+                        <td>{{applicant.state_abbrev}}</td>
+                        <td>{{applicant.position}}</td>
+                        <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
+                        <td>{{ applicant.manager}}</td>
+                        <td>{{ applicant.step}}</td>
+                        {%  if applicant.resume %}
+                            <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                        {%  else %}
+                            <td class="text-center">N/A</td></a>
+                        {%  endif %}
+                        <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                    </tr>
+                    {% endfor %}
+                {% endif %}
                 <tr>
-                    <th scope="col">State</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Full Name</th>
-                    <th scope="col">Manager</th>
-                    <th scope="col">Recruiting Step</th>
-                    <th class="text-center" scope="col">C.V.</th>
-                    <th class="text-center" scope="col">Edit</th>
-                    <th class="text-center" scope="col">Delete</th>
+                    <td colspan="8"></td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for applicant in interview1_list %}
-                <tr>
-                    <td>{{applicant.state_abbrev}}</td>
-                    <td>{{applicant.position}}</td>
-                    <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
-                    <td>{{ applicant.manager}}</td>
-                    <td>{{ applicant.step}}</td>
-                    {%  if applicant.resume %}
-                        <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                    {%  else %}
-                        <td class="text-center">N/A</td></a>
-                    {%  endif %}
-                    <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                    <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    <br>
-    </div>
 
-<!-- Second Interview not Completed -->
-    <div class="container">
-        <h5><u>SECOND INTERVIEWS DUE</u></h5>
-        <table class="table">
-            <thead>
+                <!-- First Interview not Completed -->
                 <tr>
-                    <th scope="col">State</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Full Name</th>
-                    <th scope="col">Manager</th>
-                    <th scope="col">Recruiting Step</th>
-                    <th class="text-center" scope="col">C.V.</th>
-                    <th class="text-center" scope="col">Edit</th>
-                    <th class="text-center" scope="col">Delete</th>
+                    <th colspan="8" style="background-color: #0dcaf0; font-size: x-large"><b><u>FIRST INTERVIEWS DUE</u></b></th>
                 </tr>
-            </thead>
-            <tbody>
-                {% for applicant in interview2_list %}
                 <tr>
-                    <td>{{applicant.state_abbrev}}</td>
-                    <td>{{applicant.position}}</td>
-                    <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
-                    <td>{{ applicant.manager}}</td>
-                    <td>{{ applicant.step}}</td>
-                    {%  if applicant.resume %}
-                        <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                    {%  else %}
-                        <td class="text-center">N/A</td></a>
-                    {%  endif %}
-                    <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                    <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                {%  if not interview1_list %}
+                    <tr>
+                        <td colspan="8">NONE</td>
+                    </tr>
+                {%  else %}
+                    {% for applicant in interview1_list %}
+                    <tr>
+                        <td>{{applicant.state_abbrev}}</td>
+                        <td>{{applicant.position}}</td>
+                        <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
+                        <td>{{ applicant.manager}}</td>
+                        <td>{{ applicant.step}}</td>
+                        {%  if applicant.resume %}
+                            <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                        {%  else %}
+                            <td class="text-center">N/A</td></a>
+                        {%  endif %}
+                        <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+                    <tr>
+                        <td colspan="8"></td>
+                    </tr>
+
+                <!-- Second Interview not Completed -->
+                <tr>
+                    <th colspan="8" style="background-color: #0dcaf0; font-size: x-large"><b><u>SECOND INTERVIEWS DUE</u></b></th>
                 </tr>
-                {% endfor %}
+                <tr>
+                {%  if not interview2_list %}
+                    <tr>
+                        <td colspan="8">NONE</td>
+                    </tr>
+                {%  else %}
+                    {% for applicant in interview2_list %}
+                    <tr>
+                        <td>{{applicant.state_abbrev}}</td>
+                        <td>{{applicant.position}}</td>
+                        <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
+                        <td>{{ applicant.manager}}</td>
+                        <td>{{ applicant.step}}</td>
+                        {%  if applicant.resume %}
+                            <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                        {%  else %}
+                            <td class="text-center">N/A</td></a>
+                        {%  endif %}
+                        <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+                <tr>
+                    <td colspan="8"></td>
+                </tr>
+
+                <!-- FINISH FINAL STEPS -->
+                <tr>
+                    <th colspan="8" style="background-color: #0dcaf0; font-size: x-large"><b><u>FINAL STEPS</u></b></th>
+                </tr>
+                <tr>
+                {%  if not final_step_list %}
+                    <tr>
+                        <td colspan="8">NONE</td>
+                    </tr>
+                {%  else %}
+                    {% for applicant in final_step_list %}
+                    <tr>
+                        <td>{{applicant.state_abbrev}}</td>
+                        <td>{{applicant.position}}</td>
+                        <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
+                        <td>{{ applicant.manager}}</td>
+                        <td>{{ applicant.step}}</td>
+                        {%  if applicant.resume %}
+                            <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                        {%  else %}
+                            <td class="text-center">N/A</td></a>
+                        {%  endif %}
+                        <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+                <tr>
+                    <td colspan="8"></td>
+                </tr>
+
+                <!-- OPEN FILE AND BEGIN ONBOARDING -->
+                <tr>
+                    <th colspan="8" style="background-color: #0dcaf0; font-size: x-large"><b><u>OPEN FILE AND BEGIN ONBOARDING</u></b></th>
+                </tr>
+                <tr>
+                {%  if not open_file_list %}
+                    <tr>
+                        <td colspan="8">NONE</td>
+                    </tr>
+                {%  else %}
+                    {% for applicant in open_file_list %}
+                    <tr>
+                        <td>{{applicant.state_abbrev}}</td>
+                        <td>{{applicant.position}}</td>
+                        <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
+                        <td>{{ applicant.manager}}</td>
+                        <td>{{ applicant.step}}</td>
+                        {%  if applicant.resume %}
+                            <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                        {%  else %}
+                            <td class="text-center">N/A</td></a>
+                        {%  endif %}
+                        <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                    </tr>
+                    {% endfor %}
+                {% endif %}
             </tbody>
         </table>
     <br>
     </div>
-
-<!-- FINISH FINAL STEPS -->
-    <div class="container">
-        <h5><u>COMPLETE FINAL STEPS</u></h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">State</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Full Name</th>
-                    <th scope="col">Manager</th>
-                    <th scope="col">Recruiting Step</th>
-                    <th class="text-center" scope="col">C.V.</th>
-                    <th class="text-center" scope="col">Edit</th>
-                    <th class="text-center" scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for applicant in final_step_list %}
-                <tr>
-                    <td>{{applicant.state_abbrev}}</td>
-                    <td>{{applicant.position}}</td>
-                    <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
-                    <td>{{ applicant.manager}}</td>
-                    <td>{{ applicant.step}}</td>
-                    {%  if applicant.resume %}
-                        <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                    {%  else %}
-                        <td class="text-center">N/A</td></a>
-                    {%  endif %}
-                    <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                    <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    <br>
-    </div>
-
-    <!-- OPEN FILE AND BEGIN ONBOARDING -->
-    <div class="container">
-        <h5><u>OPEN FILE AND BEGIN ONBOARDING</u></h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">State</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Full Name</th>
-                    <th scope="col">Manager</th>
-                    <th scope="col">Recruiting Step</th>
-                    <th class="text-center" scope="col">C.V.</th>
-                    <th class="text-center" scope="col">Edit</th>
-                    <th class="text-center" scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for applicant in open_file_list %}
-                <tr>
-                    <td>{{applicant.state_abbrev}}</td>
-                    <td>{{applicant.position}}</td>
-                    <td><h5><a href="applicant_detail/{{ applicant.id }}">{{ applicant.last_name}}, {{ applicant.first_name }} {{ applicant.middle_name }}</a></h5></td>
-                    <td>{{ applicant.manager}}</td>
-                    <td>{{ applicant.step}}</td>
-                    {%  if applicant.resume %}
-                        <td class="text-center"><a href="{{ applicant.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                    {%  else %}
-                        <td class="text-center">N/A</td></a>
-                    {%  endif %}
-                    <td class="text-center"><a href="{% url 'edit_applicant' pk=applicant.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                    <td class="text-center"><a href="{% url 'applicant_delete' pk=applicant.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    <br>
-    </div>
-
 {% endblock content %}
