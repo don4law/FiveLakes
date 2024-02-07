@@ -16,6 +16,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('states/', include('states.urls')),
     path('attorneys/', include('attorneys.urls')),
+    path('attorneys/', include('django.contrib.auth.urls')),
     path('recruiting/', include('recruiting.urls')),
     path('onboarding/', include('onboarding.urls')),
 ]

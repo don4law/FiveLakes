@@ -24,7 +24,48 @@
 {% endblock header %}
 
 {% block content %}}
+    {# SEARCH FORM#}
     <div class="container">
-        <h3>Attorneys Page</h3>
+    <br>
+      <form method="post">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ searchForm.non_form_errors }}
+            {% crispy searchForm %}
+        </div>
+        <div style="float: right">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+      </form>
+    </div>
+    <br><br>
+
+    <div class="container">
+        <h2><u>List of Attorneys</u></h2>
+    </div>
+
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">State</th>
+                    <th scope="col">Position</th>
+                    <th scope="col">Manager</th>
+                    <th scope="col">Attorney Name</th>
+                    <th class="text-center" scope="col">QA Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%  for attorney in attorney_list %}
+                    <tr>
+                        <td>{{attorney.state_abbrev}}</td>
+                        <td>{{attorney.position}}</td>
+                        <td>{{attorney.manager}}</td>
+                        <td><a href="attorney_data/{{ attorney.employee_id }}">{{ attorney.first_name }} {{ attorney.middle_name }} {{ attorney.last_name}}</a></td>
+                        <td class="text-center">{{attorney.priority}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock content %}

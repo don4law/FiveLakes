@@ -1,0 +1,108 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">Attorneys</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}}
+    <div class="container">
+        <br>
+{#        <h3 class=" text-center text-uppercase">ATTORNEY<a href="{% url 'edit_applicant' pk=applicant.id %}">{{ applicant.first_name }} {{ applicant.middle_name }}{{ applicant.last_name }} ({{ applicant.state_abbrev }}-{{ applicant.position }})</a></h3>#}
+        <h3 class=" text-center text-uppercase"><a href="">ATTORNEY {{ attorney.first_name }} {{ attorney.middle_name }}{{ attorney.last_name }}</a></h3>
+        <h5 class=" text-center text-uppercase">Position: {{ attorney.state_abbrev }}-{{ attorney.position }}</a></h5>
+    </div>
+    <div class="container">
+        <h5 class="text-center">
+            {%  if attorney.phone %}
+                Phone: {{ attorney.phone }},
+            {%  else %}
+                Phone: N/A,
+            {%  endif %}
+            {%  if attorney.email %}
+                Email: {{ attorney.email }}
+            {% else %}
+                Email: N/A
+            {%  endif %}
+        </h5>
+        <h5 class="text-center">
+           {%  if attorney.resume %}
+                <a href="{{ attorney.resume.url }}" target="_blank">Resume</a>
+            {%  else %}
+                Resume: N/A
+            {%  endif %}
+        </h5>
+    </div>
+    <br>
+
+    {# Container for Coaching and QA Data#}
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Attorney</th>
+                    <th scope="col">Method</th>
+                    <th scope="col">Related To</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col">Attachment</th>
+                    <th class="text-center" scope="col">Author</th>
+                    <th class="text-center" scope="col">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for QA in attorney_QA %}
+                <tr>
+                    <td>{{QA.qa_date}}</td>
+                    <td>{{QA.qa_time}}</td>
+                    <td>{{QA.re_attorney}}</td>
+                    <td>{{QA.method}}</th>
+                    <td>{{QA.related_to}}</th>
+                    <td>{{QA.qa_note}}</th>
+                    {%  if QA.document %}
+                            <td class="text-center"><a href="{{ QA.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                        {%  else %}
+                            <td class="text-center">N/A</td></a>
+                        {%  endif %}
+                    <td class="text-center">{{QA.delivered_by}}</td>
+                    <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br><br>
+    {#  Put Form to add new record here#}
+    <div class="container">
+      <form method="post" enctype="multipart/form-data">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ QAForm.non_form_errors }}
+            {% crispy QAForm %}
+        </div>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-secondary">Add New Entry</button>
+        </div>
+      </form>
+    </div>
+    {# End container for Coaching and QA Accordion #}
+{% endblock content %}

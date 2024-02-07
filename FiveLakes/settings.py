@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
-    # 'attorneys.apps.AttorneysConfig',
+    'attorneys.apps.AttorneysConfig',
     'managers.apps.ManagersConfig',
     'states.apps.StatesConfig',
     # 'registration.apps.RegistrationConfig',
@@ -131,6 +131,7 @@ USE_I18N = True
 USE_TZ = True
 
 DATE_INPUT_FORMATS = ['%m-%d-%Y']
+TIME_INPUT_FORMATS = ('%I:%M %p',)
 
 
 # Static files (CSS, JavaScript, Images)

@@ -62,7 +62,7 @@
             <h3 class="bg-success"><u>FIRST INTERVIEW </u>
                 (COMPLETED)
         {% else %}
-            <h3 class="bg-warning"><u>FIRST INTERVIEW </u>
+            <h3 style="background-color: #FF7F7F"><u>FIRST INTERVIEW </u>
                 (INCOMPLETE)
         {% endif %}
         </h3>
@@ -123,7 +123,7 @@
                 <h3 class="bg-success"><u>SECOND INTERVIEW </u>
                     (COMPLETED)
             {% else %}
-                <h3 class="bg-warning"><u>SECOND INTERVIEW </u>
+                <h3 style="background-color: #FF7F7F"><u>SECOND INTERVIEW </u>
                     (INCOMPLETE)
             {% endif %}
             </h3>
@@ -191,7 +191,7 @@
                     <h3 class="bg-success"><u>FINAL WRAP-UP STEP </u>
                         (COMPLETED)
                 {% else %}
-                    <h3 class="bg-warning"><u>FINAL WRAP-UP STEP </u>
+                    <h3 style="background-color: #FF7F7F"><u>FINAL WRAP-UP STEP </u>
                         (INCOMPLETE)
                 {% endif %}
                 </h3>
@@ -220,9 +220,9 @@
                     {%  endif %}
 
                     {% if final_step.offer_letter_email_date %}
-                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Letter Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-check fa-xl" style="color:green"></i></div>
                     {% else %}
-                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Sent Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
+                        <div class="p-2 col-sm border border-secondary rounded"><h5><u>Offer Letter Date: </u>&nbsp;&nbsp;<i class="fa-solid fa-xmark fa-xl" style="color:red"></i></div>
                     {%  endif %}
                 </div>
                 <div class="row p-3 pt-0">

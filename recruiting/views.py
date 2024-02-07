@@ -10,6 +10,7 @@ from FiveLakes.settings import BASE_DIR
 from recruiting.models import Applicant, Interview1_Model, Interview2_Model, FinalStep_Model, Search_Model
 from recruiting.forms import (Applicant_Form, Applicant_Edit, Interview1_Form, Interview2_Form,
                               FinalStep_Form, Search_Form)
+from attorneys.models import Employee
 
 
 @login_required(login_url=reverse_lazy('login'))
@@ -255,7 +256,7 @@ def applicant_final_step(request, pk=None):
             obj = form.save(commit=False)
             obj.applicant_id = pk
             applicant = Applicant.objects.get(pk=pk)
-            if obj.completed == True:
+            if obj.completed == False:
                 applicant.step = "Final"
             else:
                 applicant.step = "Open File"
@@ -282,5 +283,42 @@ def offer_letter_text(request, pk=None):
 # Function to make applicant inactive and move info to Employee
 @login_required(login_url=reverse_lazy('login'))
 def create_employee_file(request, pk=None):
-    pass
-    return render(request, 'templates/recruiting/offer_letter_text.html', context)
+    # Get objects to complete new hire file
+    applicant_data = Applicant.objects.get(pk=pk)
+    applicant_start_date = FinalStep_Model.objects.get(applicant_id=pk).start_date
+    new_hire = Employee.objects.get_or_create(employee_id=pk)
+
+    # Fill new hire object with Applicant Data
+    new_hire[0].is_active = True
+    new_hire[0].state_abbrev = applicant_data.state_abbrev
+    new_hire[0].position = applicant_data.position
+    new_hire[0].salary = applicant_data.salary
+    new_hire[0].manager = applicant_data.manager
+    new_hire[0].gender = applicant_data.gender
+    new_hire[0].first_name = applicant_data.first_name
+    new_hire[0].middle_name = applicant_data.middle_name
+    new_hire[0].last_name = applicant_data.last_name
+    new_hire[0].phone = applicant_data.phone
+    new_hire[0].email = applicant_data.email
+    new_hire[0].five_lakes_firm = applicant_data.five_lakes_firm
+    new_hire[0].huron_firm = applicant_data.huron_firm
+    new_hire[0].resume = applicant_data.resume
+    new_hire[0].hire_date = date.today()
+    new_hire[0].start_date = applicant_start_date
+    new_hire[0].onboarding_complete = False
+    new_hire[0].save()
+
+    # Change status of Applicant to Inactive if Retain in file
+    # Otherwise, delete the Applicant file
+    interview1_retain = Interview1_Model.objects.get(applicant_id=pk).retain_in_file
+    interview2_retain = Interview1_Model.objects.get(applicant_id=pk).retain_in_file
+    if interview1_retain or interview2_retain:
+        obj = Applicant.objects.get(pk=pk)
+        obj.is_active = False
+        obj.save()
+    else:
+        Applicant.objects.get(pk=pk).delete()
+        Interview1_Model.objects.get(applicant_id=pk).delete()
+        Interview2_Model.objects.get(applicant_id=pk).delete()
+        FinalStep_Model.objects.get(applicant_id=pk).delete()
+    return render(request, 'templates/recruiting.html')
