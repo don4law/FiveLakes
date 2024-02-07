@@ -53,56 +53,244 @@
     </div>
     <br>
 
-    {# Container for Coaching and QA Data#}
+    {# beginning of accordions to list and add new call monitoring information #}
     <div class="container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Time</th>
-                    <th scope="col">Attorney</th>
-                    <th scope="col">Method</th>
-                    <th scope="col">Related To</th>
-                    <th scope="col">Notes</th>
-                    <th scope="col">Attachment</th>
-                    <th class="text-center" scope="col">Author</th>
-                    <th class="text-center" scope="col">Edit</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for QA in attorney_QA %}
-                <tr>
-                    <td>{{QA.qa_date}}</td>
-                    <td>{{QA.qa_time}}</td>
-                    <td>{{QA.re_attorney}}</td>
-                    <td>{{QA.method}}</th>
-                    <td>{{QA.related_to}}</th>
-                    <td>{{QA.qa_note}}</th>
-                    {%  if QA.document %}
-                            <td class="text-center"><a href="{{ QA.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                        {%  else %}
-                            <td class="text-center">N/A</td></a>
-                        {%  endif %}
-                    <td class="text-center">{{QA.delivered_by}}</td>
-                    <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="accordion" id="Callaccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="Call Monitoring">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#CallscollapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <strong>CALL MONITORING</strong>
+              </button>
+            </h2>
+            <div id="CallscollapseOne" class="accordion-collapse collapse collapse" aria-labelledby="headingOne" data-bs-parent="#Callaccordion">
+              <div class="accordion-body">
+                  <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Call Date</th>
+                            <th scope="col">Call Time</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Disp. Code</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col">Attachment</th>
+                            <th class="text-center" scope="col">Reviewer</th>
+                            <th class="text-center" scope="col">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for call in call_requests %}
+                        <tr>
+                            <td>{{call.date}}</td>
+                            <td>{{call.call_date}}</td>
+                            <td>{{call.call_time}}</td>
+                            <td>{{call.duration}}</th>
+                            <td>{{call.disposition}}</th>
+                            <td>{{call.notes}}</th>
+                            {%  if call.document %}
+                                    <td class="text-center"><a href="{{ call.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                {%  else %}
+                                    <td class="text-center">N/A</td></a>
+                                {%  endif %}
+                            <td class="text-center">{{call.reviewer}}</td>
+{#                            <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="Add_Call">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#CallcollapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <strong>Add New Call Monitoring Event</strong>
+              </button>
+            </h2>
+            <div id="CallcollapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#Add_Call">
+              <div class="accordion-body">
+
+              {#  Put Form to add new Call Recording here #}
+                <div class="container">
+                  <form method="post" enctype="multipart/form-data">
+                    <div class="form-selection">
+                        {% csrf_token %}
+                        {{ CallForm.non_form_errors }}
+                        {% crispy CallForm %}
+                    </div>
+                    <div style="text-align: center">
+                        <button type="submit" class="btn btn-secondary">Add New Call Review</button>
+                    </div>
+                  </form>
+              </div>
+            </div>
+            {# End container for Call Monitoring #}
+          </div>
+      </div>
+    </div>
+    </div>
     </div>
     <br><br>
-    {#  Put Form to add new record here#}
+
+    {# Container for Coaching and QA Data#}
     <div class="container">
-      <form method="post" enctype="multipart/form-data">
-        <div class="form-selection">
-            {% csrf_token %}
-            {{ QAForm.non_form_errors }}
-            {% crispy QAForm %}
-        </div>
-        <div style="text-align: center">
-            <button type="submit" class="btn btn-secondary">Add New Entry</button>
-        </div>
-      </form>
+        <div class="accordion" id="QAaccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="coaching_and_QA">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <strong>COACHING AND QA</strong>
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse collapse" aria-labelledby="headingOne" data-bs-parent="#QAaccordion">
+              <div class="accordion-body">
+                  <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Method</th>
+                            <th scope="col">Related To</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col">Attachment</th>
+                            <th class="text-center" scope="col">Author</th>
+                            <th class="text-center" scope="col">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for QA in attorney_QA %}
+                        <tr>
+                            <td>{{QA.qa_date}}</td>
+                            <td>{{QA.qa_time}}</td>
+                            <td>{{QA.method}}</th>
+                            <td>{{QA.related_to}}</th>
+                            <td>{{QA.qa_note}}</th>
+                            {%  if QA.document %}
+                                    <td class="text-center"><a href="{{ QA.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                {%  else %}
+                                    <td class="text-center">N/A</td></a>
+                                {%  endif %}
+                            <td class="text-center">{{QA.delivered_by}}</td>
+                            <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="Add_QA">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <strong>Add New Coaching and QA Item</strong>
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#Add_QA">
+              <div class="accordion-body">
+              {#  Put Form to add new record here#}
+                <div class="container">
+                  <form method="post" enctype="multipart/form-data">
+                    <div class="form-selection">
+                        {% csrf_token %}
+                        {{ QAForm.non_form_errors }}
+                        {% crispy QAForm %}
+                    </div>
+                    <div style="text-align: center">
+                        <button type="submit" class="btn btn-secondary">Add New Entry</button>
+                    </div>
+                  </form>
+              </div>
+            </div>
+            {# End container for Coaching and QA Accordion #}
+          </div>
+      </div>
     </div>
-    {# End container for Coaching and QA Accordion #}
+    </div>
+    </div>
+    <br><br>
+
+    {# Container for Flex and PTO Data #}
+    <div class="container">
+    <div class="accordion" id="HRaccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="hr_requests">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#HRcollapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+              <strong>FLEX AND PTO/UTO TRACKING</strong>
+          </button>
+        </h2>
+        <div id="HRcollapseTwo" class="accordion-collapse collapse collapse" aria-labelledby="headingOne" data-bs-parent="#HRaccordion">
+          <div class="accordion-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Request Note</th>
+                        <th scope="col">Approved</th>
+                        <th scope="col">Denied</th>
+                        <th scope="col">Reasoning</th>
+                        <th class="text-center" scope="col">Attach</th>
+                        <th scope="col">Decision Manager</th>
+                        <th class="text-center" scope="col">Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hr_request in hr_requests %}
+                    <tr>
+                        <td>{{hr_request.date}}</td>
+                        <td>{{hr_request.time}}</td>
+                        <td>{{hr_request.request_type}}</th>
+                        <td>{{hr_request.request_note}}</th>
+                        {%  if hr_request.approved %}
+                            <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                        {% else %}
+                            <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                        {%  endif  %}
+                        {% if hr_request.denied %}
+                            <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                        {% else %}
+                            <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                        {% endif %}
+                        <td>{{hr_request.reasoning}}</th>
+                        {%  if hr_request.document %}
+                                <td class="text-center"><a href="{{ hr_request.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                            {%  else %}
+                                <td class="text-center">N/A</td></a>
+                            {%  endif %}
+                        <td class="text-center">{{hr_request.decision_manager}}</td>
+                        <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=hr_request.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+        {# Container for New HR Data #}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="Add_HR">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Add_HR_collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <strong>Add New Flex / Time-Off Request</strong>
+              </button>
+            </h2>
+            <div id="Add_HR_collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#Add_HR">
+              <div class="accordion-body">
+                <div class="container">
+                  <form method="post" enctype="multipart/form-data">
+                    <div class="form-selection">
+                        {% csrf_token %}
+                        {{ HRForm.non_form_errors }}
+                        {% crispy HRForm %}
+                    </div>
+                    <div style="text-align: center">
+                        <button type="submit" class="btn btn-secondary">Add New Flex / Time-Off Request</button>
+                    </div>
+                  </form>
+              </div>
+            </div>
+        </div>
+        </div>
+      </div>
+    <br><br>
+
+    </div>
 {% endblock content %}

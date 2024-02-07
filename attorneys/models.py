@@ -26,6 +26,60 @@ def get_managers():
         manager_list = []
     return manager_list
 
+def get_manager_options():
+    # LIST FOR MANAGER OPTIONS
+    states_list = State.objects.all().order_by('manager')
+    # Create list of managers
+    temp_list = []
+    for state in states_list:
+        temp_list.append(state.manager)
+    manager_list = list(OrderedDict.fromkeys(temp_list))
+    # manager_list = []
+    # [manager_list.append(manager) for manager in temp_list if manager not in manager_list]
+    MANAGER_OPTIONS = []
+    for manager in manager_list:
+        each_manager = (manager, manager)
+        MANAGER_OPTIONS.append(each_manager)
+    return MANAGER_OPTIONS
+
+def get_active_attorneys():
+    # LIST FOR ATTORNEY
+    attorneys_list = Employee.objects.filter(is_active=True, onboarding_complete=True).order_by('manager')
+    # Create list of attorneys
+    ATTORNEY_CHOICES = []
+    for attorney in attorneys_list:
+        name = attorney.last_name + ', ' + attorney.first_name
+        each_attorney = (name, name)
+        ATTORNEY_CHOICES.append(each_attorney)
+    return ATTORNEY_CHOICES
+
+class Search_Attorneys_Model(models.Model):
+    class Meta:
+        verbose_name = "Search"
+        verbose_name_plural = "Search"
+
+    MANAGER_CHOICES = get_managers()
+
+    states = State.objects.all().order_by('state_abbrev')
+    STATE_CHOICES = []
+    for state in states:
+        each_state = (state.state_abbrev, state.state_abbrev)
+        STATE_CHOICES.append(each_state)
+
+    PRIORITY_CHOICES = [
+        ('Critical', 'Critical'),
+        ('High', 'High'),
+        ('Medium', 'Medium'),
+        ('Low', 'Low'),
+    ]
+
+    search_manager = models.CharField("Search by Manager", max_length=25,
+        choices = MANAGER_CHOICES, blank=True, null=True)
+    search_state = models.CharField("Search by State", max_length=25,
+        choices = STATE_CHOICES, blank=True, null=True)
+    search_priority = models.CharField("Search by Priority", max_length=25,
+        choices = PRIORITY_CHOICES, blank=True, null=True)
+
 
 class Employee(models.Model):
     class Meta:
@@ -127,19 +181,7 @@ class QA_Model(models.Model):
         verbose_name = "Coaching and QA"
         verbose_name_plural = "Coaching and QA"
 
-    # LIST FOR MANAGER OPTIONS
-    states_list = State.objects.all().order_by('manager')
-    # Create list of managers
-    temp_list = []
-    for state in states_list:
-        temp_list.append(state.manager)
-    manager_list = list(OrderedDict.fromkeys(temp_list))
-    # manager_list = []
-    # [manager_list.append(manager) for manager in temp_list if manager not in manager_list]
-    MANAGER_OPTIONS = []
-    for manager in manager_list:
-        each_manager = (manager, manager)
-        MANAGER_OPTIONS.append(each_manager)
+    MANAGER_OPTIONS  = get_manager_options()
 
     METHOD_CHOICES = [
         ('Email', 'Email'),
@@ -167,21 +209,10 @@ class QA_Model(models.Model):
         ('Understand DS Process', 'Understand DS Process'),
     ]
 
-    # LIST FOR ATTORNEY
-    attorneys_list = Employee.objects.filter(is_active=True, onboarding_complete=True).order_by('manager')
-    # Create list of attorneys
-    ATTORNEY_CHOICES = []
-    for attorney in attorneys_list:
-        name = attorney.last_name + ', ' + attorney.first_name
-        each_attorney = (name, name)
-        ATTORNEY_CHOICES.append(each_attorney)
-
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     qa_date = models.DateField("Date", default=datetime.today().strftime(("%m/%d/%Y")),
                max_length=25, blank=True, null=True)
     qa_time = models.TimeField("Time", max_length=25, blank=True, null=True)
-    re_attorney = models.CharField("Attorney", max_length=255, choices = ATTORNEY_CHOICES,
-                blank=False, null=True)
     method = models.CharField("Method", max_length=25, choices = METHOD_CHOICES,
                 blank=False, null=True)
     related_to = models.CharField("Related To", max_length=25, choices = RELATED_TO_CHOICES,
@@ -193,31 +224,73 @@ class QA_Model(models.Model):
                 blank=False, null=True)
 
     def __str__(self):
-        return self.employee_id
+        return self.employee_id, self.method
 
-class Search_Attorneys_Model(models.Model):
+
+class HR_Requests_Model(models.Model):
     class Meta:
-        verbose_name = "Search"
-        verbose_name_plural = "Search"
+        verbose_name = "Flex and PTO/UTO Tracking"
+        verbose_name_plural = "Flex and PTO/UTO Tracking"
 
-    MANAGER_CHOICES = get_managers()
+    MANAGER_OPTIONS  = get_manager_options()
 
-    states = State.objects.all().order_by('state_abbrev')
-    STATE_CHOICES = []
-    for state in states:
-        each_state = (state.state_abbrev, state.state_abbrev)
-        STATE_CHOICES.append(each_state)
-
-    PRIORITY_CHOICES = [
-        ('Critical', 'Critical'),
-        ('High', 'High'),
-        ('Medium', 'Medium'),
-        ('Low', 'Low'),
+    TYPE_CHOICES = [
+        ('Flex', 'Flex'),
+        ('PTO', 'PTO'),
+        ('UTO', 'UTO'),
+        ('Other', 'Other'),
     ]
 
-    search_manager = models.CharField("Search by Manager", max_length=25,
-        choices = MANAGER_CHOICES, blank=True, null=True)
-    search_state = models.CharField("Search by State", max_length=25,
-        choices = STATE_CHOICES, blank=True, null=True)
-    search_priority = models.CharField("Search by Priority", max_length=25,
-        choices = PRIORITY_CHOICES, blank=True, null=True)
+    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date = models.DateField("Date", default=datetime.today().strftime(("%m/%d/%Y")),
+               max_length=25, blank=True, null=True)
+    time = models.TimeField("Time", max_length=25, blank=True, null=True)
+    request_type = models.CharField("Request Type", max_length=25, choices = TYPE_CHOICES,
+                blank=False, null=True)
+    request_note = models.CharField("Request Notes", max_length=255,
+                blank=True, null=True)
+    approved = models.BooleanField("Approved", default=False)
+    denied = models.BooleanField("Denied", default=False)
+    document = models.FileField(upload_to='HR/', blank=True, null=True)
+    reasoning = models.CharField("Reasoning", max_length=255,
+                blank=True, null=True)
+    decision_manager = models.CharField("Decision Manager", max_length=50, choices = MANAGER_OPTIONS,
+                blank=False, null=True)
+
+    def __str__(self):
+        return self.employee_id, self.request_type
+
+class Call_Monitoring_Model(models.Model):
+    class Meta:
+        verbose_name = "Call Monitoring"
+        verbose_name_plural = "Call Monitoring"
+
+    MANAGER_OPTIONS  = get_manager_options()
+
+    DISPOSITION_CHOICES = [
+        ('None', 'None'),
+        ('Left Voicemail', 'Left Voicemail'),
+        ('Incomplete Consult', 'Incomplete Consult'),
+        ('Credit Concerns', 'Credit Concerns'),
+        ('Lawsuit Concerns', 'Lawsuit Concerns'),
+        ('Requested Cancellation', 'Requested Cancellation'),
+        ('No Answer', 'No Answer'),
+        ('Cancellation Prior to Consult', 'Cancellation Prior to Consult'),
+    ]
+
+    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date = models.DateField("Review Date", default=datetime.today().strftime(("%m/%d/%Y")),
+               max_length=25, blank=True, null=True)
+    call_date = models.DateField("Call Date", default=datetime.today().strftime(("%m/%d/%Y")),
+               max_length=25, blank=True, null=True)
+    call_time = models.TimeField("Call Time", max_length=25, blank=True, null=True)
+    duration = models.CharField("Duration", max_length=25, blank=True, null=True)
+    disposition = models.CharField("Disposition", max_length=50, choices = DISPOSITION_CHOICES,
+                blank=False, null=True)
+    notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+    document = models.FileField(upload_to='Calls/', blank=True, null=True)
+    reviewer = models.CharField("Reviewer", max_length=50, choices = MANAGER_OPTIONS,
+                blank=False, null=True)
+
+    def __str__(self):
+        return self.employee_id, self.call_date
