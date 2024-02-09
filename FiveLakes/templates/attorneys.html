@@ -41,9 +41,19 @@
     <br><br>
 
     <div class="container">
-        <h2><u>List of Attorneys</u></h2>
+        <h3><u>List of Attorneys
+        {%  if search_criteria == "manager" %}
+            for {{ search_term }}
+        {% elif search_criteria == "state" %}
+            in {{ search_term }}
+        {% elif search_criteria == "priority" %}
+            with Priority of {{ search_term }}
+        {%  else %}
+            (All)
+        {% endif %}
+        </u></h3>
     </div>
-
+    {# LIST OF ALL OR SEARCHED EMPLOYEES#}
     <div class="container">
         <table class="table">
             <thead>
@@ -68,4 +78,50 @@
             </tbody>
         </table>
     </div>
+    <br><br>
+
+        {# If the Search is by Manager, Provide TICKLER and TO DO#}
+    <div class="container">
+    {# beginning of accordions to list and add new call monitoring information #}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">From Name</th>
+                            <th scope="col">Attorney</th>
+                            <th scope="col">Notes / Message</th>
+                            <th class="text-center">f/u Required</th>
+                            <th scope="col">Follow-Up Notes</th>
+                            <th scope="col">Document</th>
+                            <th class="text-center" scope="col">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tickler in tickler_list %}
+                        <tr>
+                            <td>{{tickler.date}}</td>
+                            <td>{{tickler.from_person}}</td>
+                            <td>{{tickler.employee_name}}</td>
+                            <td>{{tickler.notes}}</td>
+                            {%  if tickler.follow_up_required %}
+                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                            {%  else %}
+                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                            {%  endif %}
+                            <td>{{tickler.follow_up_notes}}</th>
+                            {%  if tickler.document %}
+                                <td class="text-center"><a href="{{ notes.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                            {%  else %}
+                                <td class="text-center">N/A</td></a>
+                            {%  endif %}
+                            {#  <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+    </div>
+    <br><br>
+
+
 {% endblock content %}

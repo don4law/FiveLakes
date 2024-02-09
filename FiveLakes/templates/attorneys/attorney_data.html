@@ -53,7 +53,89 @@
     </div>
     <br>
 
-    {# beginning of accordions to list and add new call monitoring information #}
+{#    BEGINNING OF ATTORNEY-SPECIFIC QUERIES AND ACCORDIONS#}
+    {# Attorney Notes #}
+    <div class="container">
+        <div class="accordion" id="Notesaccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="Attorney Notes">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#NotescollapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <strong>GENERAL NOTES AND MESSAGES</strong>
+              </button>
+            </h2>
+            <div id="NotescollapseOne" class="accordion-collapse collapse collapse" aria-labelledby="headingOne" data-bs-parent="#Callaccordion">
+              <div class="accordion-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">From Name</th>
+                            <th scope="col">Notes / Message</th>
+                            <th class="text-center">f/u Required</th>
+                            <th scope="col">Follow-Up Notes</th>
+                            <th scope="col">Document</th>
+                            <th class="text-center" scope="col">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for note in attorney_notes %}
+                        <tr>
+                            <td>{{note.date}}</td>
+                            <td>{{note.from_person}}</td>
+                            <td>{{note.notes}}</td>
+                            {%  if note.follow_up_required %}
+                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                            {%  else %}
+                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                            {%  endif %}
+                            <td>{{note.follow_up_notes}}</th>
+                            {%  if call.document %}
+                                <td class="text-center"><a href="{{ notes.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                            {%  else %}
+                                <td class="text-center">N/A</td></a>
+                            {%  endif %}
+                            {#  <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+          </div>
+        {# Subaccordion to ADD NEW NOTES#}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="Add_Note">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#NotecollapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <strong>Add New Note or Message</strong>
+              </button>
+            </h2>
+            <div id="NotecollapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#Add_Call">
+              <div class="accordion-body">
+              {#  Form to ADD NEW CALL RECORDING #}
+                <div class="container">
+                  <form method="post" enctype="multipart/form-data">
+                    <div class="form-selection">
+                        {% csrf_token %}
+                        {{ NotesForm.non_form_errors }}
+                        {% crispy NotesForm %}
+                    </div>
+                    <div style="text-align: center">
+                        <button type="submit" class="btn btn-secondary">Add New Attorney Note</button>
+                    </div>
+                  </form>
+              </div>
+            </div>
+            {# End container for GENERAL NOTES AND MESSAGES #}
+          </div>
+      </div>
+    </div>
+    </div>
+    </div>
+    <br><br>
+
+
+    {# CALL MONITORING DETAIL AND INFORMATION #}
     <div class="container">
         <div class="accordion" id="Callaccordion">
           <div class="accordion-item">
@@ -109,8 +191,7 @@
             </h2>
             <div id="CallcollapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#Add_Call">
               <div class="accordion-body">
-
-              {#  Put Form to add new Call Recording here #}
+              {#  Form to ADD NEW CALL RECORDING #}
                 <div class="container">
                   <form method="post" enctype="multipart/form-data">
                     <div class="form-selection">

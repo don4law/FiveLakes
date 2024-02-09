@@ -5,7 +5,6 @@ from urllib import request
 
 from django.db.models import OneToOneField
 
-from managers.models import CustomUser
 from django.contrib.auth.models import User
 from datetime import datetime, date
 from collections import OrderedDict
@@ -217,7 +216,7 @@ class QA_Model(models.Model):
                 blank=False, null=True)
     related_to = models.CharField("Related To", max_length=25, choices = RELATED_TO_CHOICES,
                 blank=False, null=True)
-    qa_note = models.TextField("Interviewer #1 Notes", max_length=255,
+    qa_note = models.TextField("Coaching and QA Notes", max_length=255,
                 blank=True, null=True)
     document = models.FileField(upload_to='QA/', blank=True, null=True)
     delivered_by = models.CharField("Author", max_length=50, choices = MANAGER_OPTIONS,
@@ -287,10 +286,29 @@ class Call_Monitoring_Model(models.Model):
     duration = models.CharField("Duration", max_length=25, blank=True, null=True)
     disposition = models.CharField("Disposition", max_length=50, choices = DISPOSITION_CHOICES,
                 blank=False, null=True)
-    notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+    notes = models.TextField("Call Notes", max_length=255, blank=True, null=True)
     document = models.FileField(upload_to='Calls/', blank=True, null=True)
     reviewer = models.CharField("Reviewer", max_length=50, choices = MANAGER_OPTIONS,
                 blank=False, null=True)
 
     def __str__(self):
         return self.employee_id, self.call_date
+
+class Attorney_Notes_Model(models.Model):
+    class Meta:
+        verbose_name = "Attorney Notes"
+        verbose_name_plural = "Attorney Notes"
+
+    MANAGER_OPTIONS  = get_manager_options()
+
+    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date = models.DateField("Review Date", default=datetime.today().strftime(("%m/%d/%Y")),
+               max_length=25, blank=True, null=True)
+    from_person = models.CharField("From", max_length=50, blank=True, null=True)
+    notes = models.TextField("Notes / Messages", max_length=255, blank=True, null=True)
+    document = models.FileField(upload_to='Notes/', blank=True, null=True)
+    follow_up_required = models.BooleanField("Follow-up", default=False)
+    follow_up_notes = models.TextField("Follow-Up Notes", max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.employee_id, self.notes
