@@ -45,11 +45,11 @@
                     <th scope="col">Type</th>
                     <th scope="col">Manager</th>
                     <th scope="col">Recruiting Status</th>
-                    <th scope="col">Current / Est. FTE</th>
                     <th scope="col">Current / Est. FT</th>
                     <th scope="col">Current / Est. PT</th>
                     <th scope="col">Current / Est. OC</th>
                     <th scope="col">Current / Est. Float</th>
+                    <th scope="col">Current / Est. FTE</th>
                     <th scope="col">Priority</th>
                 </tr>
             </thead>
@@ -61,39 +61,41 @@
                     <td>{{ state.manager}}</td>
                     <td>{{ state.recruiting_status}}</td>
 
-                    {% if state.FTE_actual < state.FTE_est %}
-                        <td class = "bg-danger" style="text-align: center">{{ FTE_actual }}/{{ state.FTE_est}}</td>
-                    {% else %}
-                        <td class = "bg-success" style="text-align: center">{{ FTE_actual }}/{{ state.FTE_est}}</td>
-                    {% endif %}
-
                     {% if state.full_time_actual < state.full_time_est %}
-                        <td class = "bg-danger" style="text-align: center">{{ full_time_actual }}/{{ state.full_time_est}}</td>
+                        <td class = "bg-danger" style="text-align: center">{{ state.full_time_actual }}/{{ state.full_time_est}}</td>
                     {% else %}
-                        <td class = "bg-success" style="text-align: center">{{ full_time_actual }}/{{ state.full_time_est}}</td>
+                        <td class = "bg-success" style="text-align: center">{{ state.full_time_actual }}/{{ state.full_time_est}}</td>
                     {% endif %}
 
                     {% if state.part_time_actual < state.part_time_est %}
-                        <td class = "bg-danger" style="text-align: center">{{part_time_actual}}/{{ state.part_time_est}}</td>
+                        <td class = "bg-danger" style="text-align: center">{{ state.part_time_actual}}/{{ state.part_time_est}}</td>
                     {% else %}
-                        <td class = "bg-success" style="text-align: center">{{part_time_actual}}/{{ state.part_time_est}}</td>
+                        <td class = "bg-success" style="text-align: center">{{ state.part_time_actual}}/{{ state.part_time_est}}</td>
                     {% endif %}
 
                     {% if state.of_counsel_actual < state.of_counsel_est %}
-                        <td class = "bg-danger" style="text-align: center">{{of_counsel_actual}}/{{ state.of_counsel_est}}</td>
+                        <td class = "bg-danger" style="text-align: center">{{ state.of_counsel_actual}}/{{ state.of_counsel_est}}</td>
                     {% else %}
-                        <td class = "bg-success"style="text-align: center">{{of_counsel_actual}}/{{ state.of_counsel_est}}</td>
+                        <td class = "bg-success"style="text-align: center">{{ state.of_counsel_actual}}/{{ state.of_counsel_est}}</td>
                     {% endif %}
 
                     {% if state.floater_actual < state.floater_est %}
-                        <td class = "bg-danger" style="text-align: center">{{floater_actual}}/{{ state.floater_est}}</td>
+                        <td class = "bg-danger" style="text-align: center">{{ state.floater_actual}}/{{ state.floater_est}}</td>
                     {% else %}
-                        <td class = "bg-success"style="text-align: center">{{floater_actual}}/{{ state.floater_est}}</td>
+                        <td class = "bg-success"style="text-align: center">{{ state.floater_actual}}/{{ state.floater_est}}</td>
+                    {% endif %}
+
+                    {% if state.FTE_actual < state.FTE_est %}
+                        <td class = "bg-danger" style="text-align: center">{{ state.FTE_actual }}/{{ state.FTE_est}}</td>
+                    {% else %}
+                        <td class = "bg-success" style="text-align: center">{{ state.FTE_actual }}/{{ state.FTE_est}}</td>
                     {% endif %}
 
                     {% if state.state_priority == "Critical" or state.state_priority == "High"%}
                         <td class = "bg-danger"><b>{{ state.state_priority}}</b></td>
-                    {% else %}
+                    {% elif state.state_priority == "Medium"%}
+                        <td class = "bg-warning">{{ state.state_priority}}</td>
+                    {%  else %}
                         <td>{{ state.state_priority}}</td>
                     {% endif %}
                 </tr>

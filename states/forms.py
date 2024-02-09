@@ -26,7 +26,7 @@ class State_Form(ModelForm):
                        css_class='form-group col-md-2 mb-0'),
                 Column('manager',
                        css_class='form-group col-md-4 mb-0'),
-            ),
+                ),
             Row(
                 Column(HTML('Check all position types that apply:'),
                        css_class='form-group col-md-3 mb-0'),
@@ -39,11 +39,23 @@ class State_Form(ModelForm):
                 Column('floater',
                        css_class='form-group col-md-2 mb-0'),
                 css_class='form-row',
-            ),
+                ),
             Row(
                 Column('recruiting_status',
                        css_class='form-group col-md-2 mb-0'),
                 Column('state_priority',
+                       css_class='form-group col-md-2 mb-0'),
+                ),
+            Row(
+                Column('full_time_est',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('part_time_est',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('of_counsel_est',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('floater_est',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('FTE_est',
                        css_class='form-group col-md-2 mb-0'),
                 ),
             )

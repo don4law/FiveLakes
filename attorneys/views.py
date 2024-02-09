@@ -56,13 +56,11 @@ def attorney_view(request):
         if employee.manager == manager_name:
             manager_id = employee.employee_id
     user_notes_list = Attorney_Notes_Model.objects.filter(employee_id_id = manager_id, follow_up_required=True).order_by('date')
-
     # Now need name of each employee for each tickler note in the NOTE for template
     for notes in user_notes_list:
         for employee in Employee.objects.all():
             if notes.employee_id_id == employee.employee_id:
                 setattr(notes, "employee_name", employee.first_name + " " + employee.last_name)
-
     tickler_list = user_notes_list
     context.update({'tickler_list': tickler_list})
     return render(request, 'templates/attorneys.html', context)
