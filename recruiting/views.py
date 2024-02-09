@@ -311,7 +311,7 @@ def create_employee_file(request, pk=None):
     # Change status of Applicant to Inactive if Retain in file
     # Otherwise, delete the Applicant file
     interview1_retain = Interview1_Model.objects.get(applicant_id=pk).retain_in_file
-    interview2_retain = Interview1_Model.objects.get(applicant_id=pk).retain_in_file
+    interview2_retain = Interview2_Model.objects.get(applicant_id=pk).retain_in_file
     if interview1_retain or interview2_retain:
         obj = Applicant.objects.get(pk=pk)
         obj.is_active = False
@@ -321,4 +321,5 @@ def create_employee_file(request, pk=None):
         Interview1_Model.objects.get(applicant_id=pk).delete()
         Interview2_Model.objects.get(applicant_id=pk).delete()
         FinalStep_Model.objects.get(applicant_id=pk).delete()
-    return render(request, 'templates/recruiting.html')
+    return HttpResponseRedirect(reverse_lazy('onboarding'))
+
