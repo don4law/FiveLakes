@@ -45,14 +45,12 @@
                 {%  for hire in onboarding_list %}
                 <tr>
                     <td>{{hire.state_abbrev}}</td>
-                    <td>{{hire.first_name}} {{ hire.last_name }} {{ hire.middle_name }}</td>
+                    <td><a href="{% url 'onboarding_detail' pk=hire.employee_id %}">{{hire.first_name}} {{ hire.last_name }} {{ hire.middle_name }}</td>
                     <td>{{hire.manager}}</td>
                     <td>N/A</td>
                     <td class="text-center">N/A</td>
                     <td class="text-center">N/A</td>
                     <td class="text-center"><a href="{% url 'onboard_complete' pk=hire.employee_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i>Move to Attorneys</td> {# Edit #}
-
-
                 </tr>
                 {%  endfor %}
             </tbody>

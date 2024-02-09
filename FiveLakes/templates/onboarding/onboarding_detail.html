@@ -25,10 +25,22 @@
 
 {% block content %}}
     <div class="container">
-        <h4><u>Onboarding Steps</u></h4>
-    </div>
+        <h3 class="text-center"><u>Onboarding Checklist</u></h3>
+        <br>
+        <h4>Attorney: <u>{{ employee.first_name }} {{  employee.last_name }}</u></h4>
     <br>
-    <div class="container">
-
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-selection">
+                <h6>
+                    {% csrf_token %}
+                    {{ onboarding_form.non_form_errors }}
+                    {% crispy onboarding_form %}
+                </h6>
+            </div>
+            <div style="text-align: center">
+                <button type="submit" class="btn btn-secondary">Save Checklist</button>
+            </div>
+        </form>
     </div>
+
 {% endblock content %}
