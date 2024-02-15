@@ -8,6 +8,8 @@ urlpatterns = [
     path('', views.attorney_view, name="attorneys"),
     path('attorney_data/<pk>/', views.attorney_data, name="attorney_data"),
     path('edit_attorney_QA/<pk>/', views.edit_attorney_QA, name="edit_attorney_QA"),
+    path('add_attorney_more_onboarding/<pk>/', views.add_attorney_more_onboarding, name="add_attorney_more_onboarding"),
+    path('edit_attorney_profile/<pk>/', views.edit_attorney_profile, name="edit_attorney_profile"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

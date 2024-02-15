@@ -1,0 +1,90 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h5 class="masthead-heading text-uppercase mb-0">Onboarding Email Text Generation</h5>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+    <br>
+        <h2 style="font-size: x-large; text-align:center"><b><u>For: {{ employee.first_name}}  {{ employee.last_name }}</b></u></h2>
+        <p style="text-align:center; font-size: x-large">(Cut and Paste to Outgoing Email)</p>
+    </div>
+    <br><br>
+    <div class="container">
+        <h5><u>Email To:</u>&nbsp;&nbsp;&nbsp;attorneyonboarding@huronlawgroup.com</h5>
+        <br>
+        <h5><u>Subject:</u>&nbsp;&nbsp;&nbsp;New {{ employee.position }} {{ employee.state_abbrev }} Attorney; Start Date: {{ employee.start_date }}</h5>
+        <br>
+        <h5><u>Content:</u></h5>
+            Good Morning / Afternoon Onboarding Team,
+        <br><br>
+            We just hired a new {{ employee.position }} attorney in the state of {{ employee.state_abbrev }}:
+            <br><br>
+            <table class="table table-bordered" style="border-bottom-width: thin">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Bar Number</th>
+                </tr>
+                <tr>
+                    <td>{{ employee.first_name }} {{  employee.middle_name }} {{ employee.last_name }}</td>
+                    <td>{{ employee.email }}</td>
+                    <td>{{ employee.phone }}</td>
+                    <td>{{ employee_add.address1 }} {{ employee_add.address2 }}<br>
+                        {{ employee_add.city }} {{ employee_add.resident_state }}  {{ employee_add.zip }}</td>
+                    <td>{{ employee_add.state_bar_number }}</td>
+                </tr>
+            </table>
+            <br>
+
+        {{ employee.first_name }} {{ employee.last_name }} was admitted to the <u>{{ employee.state_abbrev }}</u> bar on <u>_____</u> and is scheduled to start on <u>{{ employee.start_date }}</u>.
+        &nbsp;As of now, {{ pronoun }} will be handling red/green state work for (firm name(s)). He/she also holds licenses in the following states: state(s) / bar #s (also indicate if inactive)
+        [OR] {{ pronoun}} is not licensed in any additional states.
+        <br><br>
+        [FOR PART TIME ONLY:] This part-time position will consist of 4/5 hour days, for a total of 20/25 hours a week.
+        <br><br>
+        [FOR OF-COUNSEL ONLY:] We will be paying {{ employee.first_name}} {{ employee.last_name }} a flat fee of $200.00 for training.   Additionally, please note that Attorney {{ employee.last_name }} negotiated a higher rate of $_____ per pro se Answer review.
+        We will be paying {{ employee.first_name}} {{ employee.last_name }} a monthly retainer fee of $100.00, which will be applied towards the first $100 of fees.
+        <br><br>
+
+        <u>IT DEPARTMENT:</u>
+
+        {{ employee.first_name }} {{  employee.middle_name }} {{ employee.last_name }} will need a laptop, second monitor and headset.
+        Please create email addresses using the following domains:
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	@litigationlawgroup.com
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	@fivelakeslawgroup.com
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	@huronlawgroup.com
+    <br><br>
+    Additionally, please add {{ employee.first_name }} to the following global attorney email group(s):
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	networkattorneys@blplans.com
+            (add only the @litigationlawgroup.com address to this group)
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	salariedgoldstateattorneys@fivelakeslawgroup.com
+            (add only the @fivelakeslawgroup.com address to this group)
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	salariedgoldstateattorneys@huronlawgroup.com
+            (add only the @huronlawgroup.com email address to this group)
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	ofcounselgoldstateattorneys@fivelakeslawgroup.com
+            (add only the @fivelakeslawgroup.com address to this group)
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•	ofcounselgoldstateattorneys@huronlawgroup.com
+            (add only the @huronlawgroup.com email address to this group).
+        <br><br>
+    Thanks everyone!
+        </h4>
+    </div>
+    <br><br><br>
+    <div class="container">
+        <button class="btn btn-secondary float-end" onclick="self.close()">Close Window</button>
+    </div>
+{%  endblock content %}

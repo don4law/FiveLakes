@@ -93,7 +93,7 @@
     <br><br>
     {#  Put Form to add new record here#}
     <div class="container">
-      <form method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data" onclick="closeWindow()">
         <div class="form-selection">
             {% csrf_token %}
             {{ QAForm.non_form_errors }}

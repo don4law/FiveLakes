@@ -1,0 +1,50 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block menu %}
+
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">Attorneys</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}}
+    <div class="container">
+        <br>
+{#        <h3 class=" text-center text-uppercase">ATTORNEY<a href="{% url 'edit_applicant' pk=applicant.id %}">{{ applicant.first_name }} {{ applicant.middle_name }}{{ applicant.last_name }} ({{ applicant.state_abbrev }}-{{ applicant.position }})</a></h3>#}
+        <h3 class=" text-center text-uppercase"><a href="">Add Data for {{ employee.first_name }} {{ employee.middle_name }}{{ employee.last_name }}</a></h3>
+        <h5 class=" text-center text-uppercase">Position: {{ employee.state_abbrev }} {{ employee.position }}</a></h5>
+    </div>
+    <div class="container">
+    {#  Put Form to add new record here#}
+      <form method="post" enctype="multipart/form-data">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ moreForm.non_form_errors }}
+            {% crispy moreForm %}
+        </div>
+          <br>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-secondary">Add Additional Info</button>
+        </div>
+      </form>
+    <br>
+    </div>
+{% endblock content %}

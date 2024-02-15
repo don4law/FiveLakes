@@ -1,0 +1,83 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">Onboarding</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}}
+    <div class="container">
+        <h2 class="text-center"><u>Onboarding Checklist</u></h2>
+        <br>
+        <h3>For New Attorney: <u>{{ employee.first_name }} {{  employee.last_name }} ({{ employee.state_abbrev }}-{{ employee.position }})</u></h3>
+    <br>
+
+        <form method="post" enctype="multipart/form-data">
+{# 2. SEND ONBOARDING / TRAINING DOCS TO ATTORNEY #}
+            <h4><u>2.  Send Onboarding / Training Docs to Attorney</u></h4>
+            <div class="form-selection">
+                {% csrf_token %}
+                {{ onboarding_form.non_form_errors }}
+                <p style="font-size: large">{{ onboarding_form.send_pp_docs }}&nbsp;&nbsp;&nbsp;P&Ps, Sample Enrollment Docs, Sales Agent Scripts, BLP Docs, & Settlements Spreadsheet</p>
+                <p style="font-size: large">{{ onboarding_form.send_software_docs }}&nbsp;&nbsp;&nbsp;Software</p>
+            <br>
+{# 3. TRAINING #}
+    {#  SALARIED ATTORNEYS#}
+                <h4><u>3.  Training</u></h4>
+                <div class="container">
+                    <h5><u>     Salaried Attorneys</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.intro_training }}&nbsp;&nbsp;&nbsp;Schedule Firm Introduction Training: 9:00 am - 10:00 am;
+                        &nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;{{ onboarding_form.intro_training_date }}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(confirm date/time with Amanda Plumb and/or Morgan Miner; add Amanda and/or Morgan as attendee; add Dan Carlson as an optional attendee)</p>
+                    <br>
+        {#  FLLG ATTORNEYS#}
+                    <h5><u>     FLLG Attorneys</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.salesforce_training }}&nbsp;&nbsp;&nbsp;Schedule Salesforce and Servicing Training (includes IT check): 1:00 pm - 2:00 pm;
+                        &nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;{{ onboarding_form.salesforce_training_date }}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(confirm date/time with Amanda Plumb and/or Morgan Miner; add Amanda and/or Morgan as attendee)</p>
+                    <p style="font-size: large">{{ onboarding_form.script_training }}&nbsp;&nbsp;&nbsp;Schedule individual Script Training sessions for day after initial sessions;
+                        &nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;{{ onboarding_form.salesforce_training_date }}</p>
+                    <br>
+        {#  ALL ATTORNEYS#}
+                    <h5><u>     All Attorneys</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.attorney_pp_training }}&nbsp;&nbsp;&nbsp;Schedule Attorney Policies and Procedures Training: 2:00 pm - 3:00 pm;
+                        &nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;{{ onboarding_form.attorney_pp_date }}</p>
+                    <p style="font-size: large">{{ onboarding_form.touchbase_meeting }}&nbsp;&nbsp;&nbsp;Schedule Touchbase Meeting;
+                        &nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;{{ onboarding_form.touchbase_date }}</p>
+                    <br>
+                </div>
+    {#  COMPLETED ONBOARDING #}
+                    <h5><u>     Complete Onboarding</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.onboarding_completed }}&nbsp;&nbsp;&nbsp;CHECK IF ONBOARDING IS COMPLETED</p>
+                </div>
+                <br>
+                <div style="text-align: center">
+                    <button type="submit" class="btn btn-success" style="float: right">Save and Next&nbsp;&nbsp<i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <br>
+            </form>
+            <a href="{% url 'onboarding_detail' pk=employee.employee_id %}">
+                <button class="btn btn-primary" type="submit" style="float: left"><i class="fa-solid fa-backward" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Back to Step 1</button>
+            </a>
+            <br><br>
+    </div>
+    <br><br>
+{% endblock content %}

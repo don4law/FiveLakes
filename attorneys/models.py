@@ -167,12 +167,41 @@ class Employee(models.Model):
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     hire_date = models.DateField("Start Date", max_length=255, blank=True, null=True)
     start_date = models.DateField("Start Date", max_length=255, blank=False, null=True)
+    onboarding_step = models.CharField("Last Name", max_length=50, blank=True, null=True)
     onboarding_complete = models.BooleanField("Onboarding Complete", default=False)
-    priority = models.CharField("Priority", max_length=10,
+    priority = models.CharField("Criticality Level", max_length=10,
         choices = PRIORITY_CHOICES, default="Low", blank=False, null=True)
+    prev_page = models.CharField("Last Name", max_length=100, blank=True, null=True)
+
 
     def __str__(self):
         return self.last_name + ", " + self.first_name + " " + self.middle_name
+
+
+class Employee_More_Model(models.Model):
+    class Meta:
+        verbose_name = "Employee's Additional Data"
+        verbose_name_plural = "Employees' Additional Data"
+
+    employee_id = models.IntegerField("Employee ID", primary_key=True)
+    address1 = models.CharField("Address1", max_length=50, blank=True, null=True)
+    address2 = models.CharField("Address2", max_length=50, blank=True, null=True)
+    city = models.CharField("City", max_length=50, blank=True, null=True)
+    resident_state = models.CharField("State", max_length=5, blank=True, null=True)
+    zip = models.CharField("Zip", max_length=25, blank=True, null=True)
+    phone2 = models.CharField("Phone Number2", max_length=15, blank=True, null=True)
+    phone3 = models.CharField("Phone Number3", max_length=15, blank=True, null=True)
+    email2 = models.EmailField("Email2", max_length=254, blank=True, null=True)
+    email3 = models.EmailField("Email3", max_length=254, blank=True, null=True)
+    state_bar_number = models.CharField("State Bar Number", max_length=25, blank=True, null=True)
+    state_bar_document = models.FileField(upload_to='Bar/', blank=True, null=True)
+    other_states = models.CharField("Other States", max_length=25, blank=True, null=True)
+    signed_offer_letter = models.FileField(upload_to='HR/', blank=True, null=True)
+    ICA_agreement = models.FileField(upload_to='HR/', blank=True, null=True)
+
+    def __str__(self):
+        return self.employee_id
+
 
 
 class QA_Model(models.Model):
@@ -304,7 +333,7 @@ class Attorney_Notes_Model(models.Model):
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField("Review Date", default=datetime.today().strftime(("%m/%d/%Y")),
                max_length=25, blank=True, null=True)
-    from_person = models.CharField("From", max_length=50, blank=True, null=True)
+    from_person = models.CharField("From (Name)", max_length=50, blank=True, null=True)
     notes = models.TextField("Notes / Messages", max_length=255, blank=True, null=True)
     document = models.FileField(upload_to='Notes/', blank=True, null=True)
     follow_up_required = models.BooleanField("Follow-up", default=False)
@@ -312,3 +341,4 @@ class Attorney_Notes_Model(models.Model):
 
     def __str__(self):
         return self.employee_id, self.notes
+

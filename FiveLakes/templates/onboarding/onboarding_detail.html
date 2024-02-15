@@ -25,22 +25,57 @@
 
 {% block content %}}
     <div class="container">
-        <h3 class="text-center"><u>Onboarding Checklist</u></h3>
+        <h2 class="text-center"><u>Onboarding Checklist</u></h2>
         <br>
-        <h4>Attorney: <u>{{ employee.first_name }} {{  employee.last_name }}</u></h4>
+        <h3>For New Attorney: <u>{{ employee.first_name }} {{  employee.last_name }} ({{ employee.state_abbrev }}-{{ employee.position }})</u></h3>
     <br>
+        <h4><u>1.  Administrative Tasks</u></h4>
         <form method="post" enctype="multipart/form-data">
             <div class="form-selection">
-                <h6>
-                    {% csrf_token %}
-                    {{ onboarding_form.non_form_errors }}
-                    {% crispy onboarding_form %}
-                </h6>
-            </div>
-            <div style="text-align: center">
-                <button type="submit" class="btn btn-secondary">Save Checklist</button>
-            </div>
-        </form>
-    </div>
+                {% csrf_token %}
+                {{ onboarding_form.non_form_errors }}
+{# 1. ADMINISTRATIVE TASKS#}
+                <p style="font-size: large">{{ onboarding_form.add_attorney_more }}&nbsp;&nbsp;&nbsp;
+                    <a href ="{% url 'add_attorney_more_onboarding' pk=employee.employee_id %}">Add additional employee data, including state bar information
+                    </a></p>
+                <p style="font-size: large">{{ onboarding_form.pause_job }}&nbsp;&nbsp;&nbsp;Pause job posting; review and save pending resumes (if needed)</p>
+                <p style="font-size: large">{{ onboarding_form.send_onboarding_email }}&nbsp;&nbsp;&nbsp;Send email to:
+                    <a href ={{ onboarding_email }}>attorneyonboarding@huronlawgroup.com</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{% url 'onboarding_text' pk=employee.employee_id %}" target="_blank"><i class="fa-solid fa-pen-to-square fa-lg"></i>&nbsp;&nbsp;Get text for onboarding email</a></p>
+                <p style="font-size: large">{{ onboarding_form.add_to_spreadsheet }}&nbsp;&nbsp;&nbsp;(Jessica) Add Attorney to Network Attorney Spreadsheet
+                <p style="font-size: large">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ onboarding_form.send_spreadsheet }}&nbsp;&nbsp;&nbsp;(Jessica) Send updated Network Attorney Spreadsheet to Matt, Don, Eric, Kevin, Erin, Jess S., Leigh, Victoria, Monique, Roxie</p>
+                <p style="font-size: large">{{ onboarding_form.save_license }}&nbsp;&nbsp;&nbsp;Save copy of state bar license verification to attorney file (for every state in which attorney is licensed)</p>
+                <br>
+{#  SALARIED POSITIONS #}
+                {% if employee.position != "Of Counsel" %}
+                    <h5><u>     Salaried Positions</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.save_offer_letter }}&nbsp;&nbsp;&nbsp;<a href="{% url 'add_attorney_more_onboarding' pk=employee.employee_id %}">Save signed offer letter to attorney file</a></p>
+                    <p style="font-size: large">{{ onboarding_form.puzzle_form }}&nbsp;&nbsp;&nbsp;Complete
+                        <a href="https://forms.monday.com/forms/ff4574d07b04ca25588b1239eed572e8?r=use1" target="_blank">Puzzle HR New Hire Form</a></p>
+                    <p style="font-size: large">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ onboarding_form.include_note }}&nbsp;&nbsp;&nbsp;Include note if actual start date is different from start date on letter</p>
+                    <p style="font-size: large">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ onboarding_form.attach_copy_letter }}&nbsp;&nbsp;&nbsp;Attach copy of offer letter</p>
+                    <p style="font-size: large">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ onboarding_form.employee_referral_form }}&nbsp;&nbsp;&nbsp;Attach Employee Referral Program form (if applicable)</p>
+                {%  endif %}
+{#  OF COUNSEL POSITIONS #}
+                {% if employee.position == "Of Counsel" %}
+                <h5><u>     Of Counsel Positions</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.return_ICA }}&nbsp;&nbsp;&nbsp;Return ICA</p>
+                {%  endif %}
+{#  HURON ATTORNEYS #}
+                {%  if employee.huron_firm %}
+                    <h5><u>     Huron Attorneys</u></h5>
+                    <p style="font-size: large">{{ onboarding_form.notify_Huron }}&nbsp;&nbsp;&nbsp;Notify Laura Pina of new attorney start date</p>
+                {%  endif %}
 
+                </h5>
+            </div>
+            <br>
+            <div style="text-align: center">
+                <button type="submit" class="btn btn-success" style="float: right">Save and Next&nbsp;&nbsp<i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <br>
+        </form>
+    <br>
+    </div>
+    <br><br>
 {% endblock content %}
