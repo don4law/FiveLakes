@@ -18,87 +18,106 @@
 <header class="masthead bg-primary text-white text-center">
     <div class="container d-flex align-items-center flex-column">
         <!-- Masthead Heading-->
-        <h4 class="masthead-heading text-uppercase mb-0">Attorneys</h4>
+        <h4 class="masthead-heading text-uppercase mb-0">Attorney Dashboard</h4>
     </div>
 </header>
 {% endblock header %}
 
-{% block content %}}
-    {# SEARCH FORM#}
+{% block content %}
     <div class="container">
-    <br>
-      <form method="post">
-        <div class="form-selection">
-            {% csrf_token %}
-            {{ searchForm.non_form_errors }}
-            {% crispy searchForm %}
-        </div>
-        <div style="float: right">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </div>
-      </form>
-    </div>
-    <br><br>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="attorneys-tab" data-bs-toggle="tab" data-bs-target="#attorneys" type="button" role="tab" aria-controls="home" aria-selected="true">Attorney List</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tickler-tab" data-bs-toggle="tab" data-bs-target="#tickler" type="button" role="tab" aria-controls="profile" aria-selected="false">Tickler</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="todo-tab" data-bs-toggle="tab" data-bs-target="#todo" type="button" role="tab" aria-controls="contact" aria-selected="false">To Do</button>
+          </li>
+        </ul>
 
-    <div class="container">
-        <h3><u>List of Attorneys
-        {%  if search_criteria == "manager" %}
-            for {{ search_term }}
-        {% elif search_criteria == "state" %}
-            in {{ search_term }}
-        {% elif search_criteria == "priority" %}
-            with Priority of {{ search_term }}
-        {%  else %}
-            (All)
-        {% endif %}
-        </u></h3>
-    </div>
-    {# LIST OF ALL OR SEARCHED EMPLOYEES#}
-    <div class="container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">State</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Attorney Name</th>
-                    <th scope="col">Manager</th>
-                    <th class="text-center" scope="col">Resume</th>
-                    <th class="text-center" scope="col">Edit</th>
-                    <th class="text-center" scope="col">QA Priority</th>
-                </tr>
-            </thead>
-            <tbody>
-                {%  for attorney in attorney_list %}
-                    <tr>
-                        <td>{{attorney.state_abbrev}}</td>
-                        <td>{{attorney.position}}</td>
-                        <td><a href="attorney_data/{{ attorney.employee_id }}">{{ attorney.first_name }} {{ attorney.middle_name }} {{ attorney.last_name}}</a></td>
-                        <td>{{attorney.manager}}</td>
-                        {%  if attorney.resume %}
-                            <td class="text-center"><a href="{{ attorney.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                        {%  else %}
-                            <td class="text-center">N/A</td></a>
-                        {%  endif %}
-                        <td class="text-center"><a href="{% url 'edit_attorney_profile' pk=attorney.employee_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                        {% if attorney.priority == "Critical" %}
-                            <td class = "bg-danger" style="text-align: center">{{attorney.priority}}</td>
-                        {% elif attorney.priority == "High" %}
-                            <td class = "bg-warning" style="text-align: center">{{attorney.priority}}</td>
-                        {% elif attorney.priority == "Medium" %}
-                            <td class = "bg-info" style="text-align: center">{{attorney.priority}}</td>
-                       {%  else %}
-                            <td class = "bg-success" style="text-align: center">{{attorney.priority}}</td>
+        {# Content for Attorney List Tab#}
+        <div class="tab-content" id="myTabContent" style="border: 1px solid #ddd">
+             <div class="tab-pane fade show active" id="attorneys" role="tabpanel" aria-labelledby="attorneys-tab">
+                <br>
+                 <div class="container">
+                    {# SEARCH FORM#}
+                  <form method="post">
+                    <div class="form-selection">
+                        {% csrf_token %}
+                        {{ searchForm.non_form_errors }}
+                        {% crispy searchForm %}
+                    </div>
+                    <div style="float: right">
+                        <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
+                  </form>
+                </div>
+                <br>
+
+                <div class="container">
+                    <h3><u>List of Attorneys
+                    {%  if search_criteria == "manager" %}
+                        for {{ search_term }}
+                    {% elif search_criteria == "state" %}
+                        in {{ search_term }}
+                    {% elif search_criteria == "priority" %}
+                        with Priority of {{ search_term }}
+                    {%  else %}
+                        (All)
                     {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <br><br>
+                    </u></h3>
+                </div>
+                {# LIST OF ALL OR SEARCHED EMPLOYEES#}
+                <div class="container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">State</th>
+                                <th scope="col">Position</th>
+                                <th scope="col">Attorney Name</th>
+                                <th scope="col">Manager</th>
+                                <th class="text-center" scope="col">Resume</th>
+                                <th class="text-center" scope="col">Edit</th>
+                                <th class="text-center" scope="col">QA Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%  for attorney in attorney_list %}
+                                <tr>
+                                    <td>{{attorney.state_abbrev}}</td>
+                                    <td>{{attorney.position}}</td>
+                                    <td><a href="attorney_data/{{ attorney.employee_id }}">{{ attorney.first_name }} {{ attorney.middle_name }} {{ attorney.last_name}}</a></td>
+                                    <td>{{attorney.manager}}</td>
+                                    {%  if attorney.resume %}
+                                        <td class="text-center"><a href="{{ attorney.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></a></td>
+                                    {%  else %}
+                                        <td class="text-center">N/A</td>
+                                    {%  endif %}
+                                    <td class="text-center"><a href="{% url 'edit_attorney_profile' pk=attorney.employee_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></a></td> {# Edit #}
+                                    {% if attorney.priority == "Critical" %}
+                                        <td class = "bg-danger" style="text-align: center">{{attorney.priority}}</td>
+                                    {% elif attorney.priority == "High" %}
+                                        <td class = "bg-warning" style="text-align: center">{{attorney.priority}}</td>
+                                    {% elif attorney.priority == "Medium" %}
+                                        <td class = "bg-info" style="text-align: center">{{attorney.priority}}</td>
+                                   {%  else %}
+                                        <td class = "bg-success" style="text-align: center">{{attorney.priority}}</td>
+                                {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <br><br>
+            </div>
 
-        {# If the Search is by Manager, Provide TICKLER and TO DO#}
-    <div class="container">
-    {# beginning of accordions to list and add new call monitoring information #}
+
+        {# Provide TICKLER for #}
+        <div class="tab-pane fade" id="tickler" role="tabpanel" aria-labelledby="tickler-tab">
+            <div class="container">
+            {# beginning of accordions to list and add new call monitoring information #}
                 <table class="table">
                     <thead>
                         <tr>
@@ -120,24 +139,46 @@
                             <td>{{tickler.employee_name}}</td>
                             <td>{{tickler.notes}}</td>
                             {%  if tickler.follow_up_required %}
-                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></td>
                             {%  else %}
-                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></td>
                             {%  endif %}
-                            <td>{{tickler.follow_up_notes}}</th>
+                            <td>{{tickler.follow_up_notes}}</td>
                             {%  if tickler.document %}
-                                <td class="text-center"><a href="{{ notes.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                <td class="text-center"><a href="{{ notes.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></a></td>
                             {%  else %}
-                                <td class="text-center">N/A</td></a>
+                                <td class="text-center">N/A</td>
                             {%  endif %}
                             {#  <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></a></td> {# Edit #}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-    </div>
-    <br><br>
+            </div>
+        </div>
+
+        {# Provide TO DO FORM #}
+          <div class="tab-pane fade" id="todo" role="tabpanel" aria-labelledby="todo-tab">
+            <div class="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">From Name</th>
+                            <th scope="col">Attorney</th>
+                            <th scope="col">Notes / Message</th>
+                            <th class="text-center">f/u Required</th>
+                            <th scope="col">Follow-Up Notes</th>
+                            <th scope="col">Document</th>
+                            <th class="text-center" scope="col">Edit</th>
+                        </tr>
+                    </thead>
+                </table>
+                <p>TEST TO DO GOES HERE</p>
+            </div>
+          </div>
+        </div>
 
 
 {% endblock content %}
