@@ -6,7 +6,8 @@ from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
     Field, HTML
 from states.models import get_managers
 from attorneys.models import Employee, Search_Attorneys_Model, QA_Model, \
-    HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model
+    HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model, \
+    To_Do_Model
 
 # Alphabetized list of managers for choices
 managers=get_managers()
@@ -256,7 +257,7 @@ class Attorney_Notes_Form(ModelForm):
     class Meta:
         model = Attorney_Notes_Model
         fields = ('date', 'from_person', 'notes', 'follow_up_required',
-                  'follow_up_notes', 'document')
+                  'follow_up_notes', 'document', 'follow_up_completed')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -265,6 +266,8 @@ class Attorney_Notes_Form(ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('follow_up_required',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('follow_up_completed',
                        css_class='form-group col-md-4 mb-0'),
             ),
             Row(
@@ -282,3 +285,31 @@ class Attorney_Notes_Form(ModelForm):
                        css_class='form-group col-md-6 mb-0'),
             ),
         )
+
+class To_Do_Form(ModelForm):
+    class Meta:
+        model = To_Do_Model
+        fields = ('date', 'due_date', 'task', 'notes',
+                  'document', 'completed')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('date',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('due_date',
+                       css_class='form-group col-md-2 mb-0'),
+                Column('task',
+                       css_class='form-group col-md-6 mb-0'),
+                Column('notes',
+                       css_class='form-group col-md-8 mb-0'),
+                Column('document',
+                       css_class='form-group col-md-4 mb-0'),
+
+                Column('completed',
+                       css_class='form-group col-md-2 mb-0'),
+                ),
+            )

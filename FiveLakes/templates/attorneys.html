@@ -27,14 +27,18 @@
     <div class="container">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="attorneys-tab" data-bs-toggle="tab" data-bs-target="#attorneys" type="button" role="tab" aria-controls="home" aria-selected="true">Attorney List</button>
+            <button class="nav-link active" id="attorneys-tab" data-bs-toggle="tab" data-bs-target="#attorneys" type="button" role="tab" aria-controls="attorneys" aria-selected="true">Attorney List</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tickler-tab" data-bs-toggle="tab" data-bs-target="#tickler" type="button" role="tab" aria-controls="profile" aria-selected="false">Tickler</button>
+            <button class="nav-link" id="tickler-tab" data-bs-toggle="tab" data-bs-target="#tickler" type="button" role="tab" aria-controls="tickler" aria-selected="false">Tickler</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="todo-tab" data-bs-toggle="tab" data-bs-target="#todo" type="button" role="tab" aria-controls="contact" aria-selected="false">To Do</button>
+            <button class="nav-link" id="todo-tab" data-bs-toggle="tab" data-bs-target="#todo" type="button" role="tab" aria-controls="todo" aria-selected="false">To Do</button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="issues-tab" data-bs-toggle="tab" data-bs-target="#issues" type="button" role="tab" aria-controls="issues" aria-selected="false">Issues Log</button>
+          </li>
+
         </ul>
 
         {# Content for Attorney List Tab#}
@@ -117,6 +121,7 @@
         {# Provide TICKLER for #}
         <div class="tab-pane fade" id="tickler" role="tabpanel" aria-labelledby="tickler-tab">
             <div class="container">
+            <br>
             {# beginning of accordions to list and add new call monitoring information #}
                 <table class="table">
                     <thead>
@@ -125,8 +130,9 @@
                             <th scope="col">From Name</th>
                             <th scope="col">Attorney</th>
                             <th scope="col">Notes / Message</th>
-                            <th class="text-center">f/u Required</th>
+                            <th class="text-center">F/U Required</th>
                             <th scope="col">Follow-Up Notes</th>
+                            <th scope="col">Completed</th>
                             <th scope="col">Document</th>
                             <th class="text-center" scope="col">Edit</th>
                         </tr>
@@ -136,7 +142,7 @@
                         <tr>
                             <td>{{tickler.date}}</td>
                             <td>{{tickler.from_person}}</td>
-                            <td>{{tickler.employee_name}}</td>
+                            <td><a href="{% url 'attorney_data' pk=tickler.employee_id_id %}">{{tickler.employee_name}}</td>
                             <td>{{tickler.notes}}</td>
                             {%  if tickler.follow_up_required %}
                                 <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></td>
@@ -144,13 +150,19 @@
                                 <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></td>
                             {%  endif %}
                             <td>{{tickler.follow_up_notes}}</td>
-                            {%  if tickler.document %}
-                                <td class="text-center"><a href="{{ notes.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></a></td>
+                            {% if ticker.follow_up_required and tickler.follow_up_completed %}
+                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                            {% elif tickler.follow_up_required %}
+                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
                             {%  else %}
                                 <td class="text-center">N/A</td>
                             {%  endif %}
-                            {#  <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></a></td> {# Edit #}
+                            {%  if tickler.document %}
+                                <td class="text-center"><a href="{{ tickler.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></a></td>
+                            {%  else %}
+                                <td class="text-center">N/A</td>
+                            {%  endif %}
+                            <td class="text-center"><a href="{% url 'edit_note' pk=tickler.id employee=tickler.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></a></td> {# Edit #}
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -158,9 +170,63 @@
             </div>
         </div>
 
-        {# Provide TO DO FORM #}
+        {# TO DO TAB #}
           <div class="tab-pane fade" id="todo" role="tabpanel" aria-labelledby="todo-tab">
             <div class="container">
+                <br>
+                    <a href="{% url 'add_todo' pk=manager_id %}" >
+                        <button class="btn btn-success btn-sm" style="float: right" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add Task</button>
+                    </a>
+                <br><br>
+                {% if to_do_list %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Due Date</th>
+                            <th scope="col">Task</th>
+                            <th scope="col">Notes</th>
+                            <th class="text-center" scope="col">Document</th>
+                            <th class="text-center" scope="col">Completed</th>
+                            <th class="text-center" scope="col">Edit</th>
+                            <th class="text-center" scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in to_do_list %}
+                            {% if task.completed %}
+                                <tr style="text-decoration-line: line-through">
+                            {% else %}
+                                <tr>
+                            {% endif %}
+                                   <td>{{ task.date }}</td>
+                                   <td>{{ task.due_date }}</td>
+                                   <td>{{ task.task }}</td>
+                                   <td>{{ task.notes }}</td>
+                                    {%  if task.document %}
+                                        <td class="text-center"><a href="{{ task.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                    {%  else %}
+                                        <td class="text-center">N/A</td></a>
+                                    {%  endif %}
+                                    {% if task.completed %}
+                                        <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                                    {% else %}
+                                        <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                                    {%  endif %}
+                                    <td class="text-center"><a href="{% url 'edit_task' pk=task.id employee=task.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                                    <td class="text-center"><a href="{% url 'delete_task' pk=task.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            </div>
+          </div>
+
+        {# ISSUES LOG #}
+        <div class="tab-pane fade" id="issues" role="tabpanel" aria-labelledby="issues-tab">
+            <div class="container">
+                <br>
                 <table class="table">
                     <thead>
                         <tr>
@@ -179,6 +245,4 @@
             </div>
           </div>
         </div>
-
-
 {% endblock content %}

@@ -7,9 +7,10 @@ from datetime import datetime, date
 from django.forms import inlineformset_factory
 from managers.models import CustomUser
 from attorneys.models import Employee, Search_Attorneys_Model, QA_Model, \
-    HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model
+    HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model, \
+    To_Do_Model
 from attorneys.forms import Search_Attorneys_Form, QA_Form, HR_Form, Call_Form, Attorney_Notes_Form, \
-    Edit_EmployeeForm1, Employee_More_Form
+    Edit_EmployeeForm1, Employee_More_Form, To_Do_Form
 
 @login_required(login_url=reverse_lazy('login'))
 def attorney_view(request):
@@ -55,7 +56,8 @@ def attorney_view(request):
     for employee in Employee.objects.all():
         if employee.manager == manager_name:
             manager_id = employee.employee_id
-    user_notes_list = Attorney_Notes_Model.objects.filter(employee_id_id = manager_id, follow_up_required=True).order_by('date')
+    user_notes_list = Attorney_Notes_Model.objects.filter(employee_id_id = manager_id, follow_up_required=True, follow_up_completed=False).order_by('date')
+    context.update({'manager_id': manager_id})
     # Now need name of each employee for each tickler note in the NOTE for template
     for notes in user_notes_list:
         for employee in Employee.objects.all():
@@ -63,6 +65,15 @@ def attorney_view(request):
                 setattr(notes, "employee_name", employee.first_name + " " + employee.last_name)
     tickler_list = user_notes_list
     context.update({'tickler_list': tickler_list})
+    # Get Each Managers task list
+    to_do_list = To_Do_Model.objects.filter(employee_id_id = manager_id)
+    # Now need name of each employee for each tickler note in the NOTE for template
+    for to_do in to_do_list:
+        for employee in Employee.objects.all():
+            if to_do.employee_id_id == employee.employee_id:
+                setattr(employee, "employee_name", employee.first_name + " " + employee.last_name)
+    to_do = to_do_list
+    context.update({'to_do_list': to_do})
     return render(request, 'templates/attorneys.html', context)
 
 # View to edit all attorney profile data and return to onboarding
@@ -136,38 +147,14 @@ def attorney_data(request, pk=None):
         # GET form to add new instance for Flex/PTO Time
         HRForm = HR_Form()
         context.update({'HRForm': HRForm})
-        # GET form to add new instance for Flex/PTO Time
+        # GET form to add new instance for Call Monitoring
         CallForm = Call_Form()
         context.update({'CallForm': CallForm})
-        # GET form to add new instance for Flex/PTO Time
+        # GET form to add new instance for Notes
         NotesForm = Attorney_Notes_Form()
         context.update({'NotesForm': NotesForm})
         return render(request, 'templates/attorneys/attorney_data.html', context)
 
-@login_required(login_url=reverse_lazy('login'))
-def edit_attorney_QA(request, pk=None):
-    context = {'title': 'Attorneys'}
-    attorney_data = Employee.objects.get(employee_id=pk)
-    context.update({'attorney': attorney_data})
-    if request.method == "POST":
-        form = QA_Form(request.POST, request.FILES)
-        form.instance.employee_id_id = pk
-        if form.is_valid():
-            form.save()
-            print('saved')
-        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
-        # else:
-        #     print(form.errors)
-        #     return HttpResponseRedirect(reverse_lazy('attorneys'), context)
-
-    else:
-        # Filter Attorney's Coaching and QA Data for context
-        attorney_QA = QA_Model.objects.filter(employee_id=pk).order_by('qa_date')
-        context.update({'attorney_QA': attorney_QA})
-        # GET form to add new instance in QA
-        QAForm = QA_Form(instance=attorney_data)
-        context.update({'QAForm': QAForm})
-        return render(request, 'templates/attorneys/attorney_data.html', context)
 
 # edit_attorney_all (To edit All Attorney Info: Employee Model and Employee_More Model
 @login_required(login_url=reverse_lazy('login'))
@@ -203,3 +190,152 @@ def edit_attorney_profile(request, pk=None, prev_page=None):
         context.update({'attorneyForm1': AttorneyForm1})
         context.update({'attorneyForm2': AttorneyForm2})
         return render(request, 'templates/attorneys/edit_attorney_profile.html', context)
+
+
+@login_required(login_url=reverse_lazy('login'))
+def add_note(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=pk)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Attorney_Notes_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+            print('saved')
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+    else:
+        NoteForm = Attorney_Notes_Form(instance=attorney_data)
+        context.update({'noteForm': NoteForm})
+        return render(request, 'templates/attorneys/add_attorney_note.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_note(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Attorney_Notes_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+            print('saved')
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+    else:
+        note_instance = Attorney_Notes_Model.objects.get(id=pk)
+        NoteForm = Attorney_Notes_Form(instance=note_instance)
+        context.update({'noteForm': NoteForm})
+        # return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+        return render(request, 'templates/attorneys/edit_attorney_note.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def add_call(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=pk)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Call_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+    else:
+        CallForm = Call_Form(instance=attorney_data)
+        context.update({'callForm': CallForm})
+        return render(request, 'templates/attorneys/add_call.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_call(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Call_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+    else:
+        call_instance = Call_Monitoring_Model.objects.get(id=pk)
+        CallForm = Call_Form(instance=call_instance)
+        context.update({'callForm': CallForm})
+        # return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+        return render(request, 'templates/attorneys/edit_call.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def add_coaching(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=pk)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = QA_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+    else:
+        QAForm = QA_Form(instance=attorney_data)
+        context.update({'qaForm': QAForm})
+        return render(request, 'templates/attorneys/add_qa.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_coaching(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = QA_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+    else:
+        qa_instance = QA_Model.objects.get(id=pk)
+        QAForm = QA_Form(instance=qa_instance)
+        context.update({'qaForm': QAForm})
+        return render(request, 'templates/attorneys/edit_qa.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def add_todo(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=pk)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = To_Do_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorneys'))
+    else:
+        ToDoForm = To_Do_Form(instance=attorney_data)
+        context.update({'todoForm': ToDoForm})
+        return render(request, 'templates/attorneys/add_todo.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_task(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = To_Do_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorneys'))
+    else:
+        task_instance = To_Do_Model.objects.get(id=pk)
+        TaskForm = To_Do_Form(instance=task_instance)
+        context.update({'todoForm': TaskForm})
+        return render(request, 'templates/attorneys/edit_todo.html', context)
+
+
+@login_required(login_url=reverse_lazy('login'))
+def delete_task(request, pk=None):
+    context = {'title': 'Attorneys'}
+    task = To_Do_Model.objects.get(id=pk)
+    task.delete()
+    return HttpResponseRedirect(reverse('attorneys'))

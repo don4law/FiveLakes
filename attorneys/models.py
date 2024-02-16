@@ -203,7 +203,6 @@ class Employee_More_Model(models.Model):
         return self.employee_id
 
 
-
 class QA_Model(models.Model):
     class Meta:
         verbose_name = "Coaching and QA"
@@ -338,7 +337,26 @@ class Attorney_Notes_Model(models.Model):
     document = models.FileField(upload_to='Notes/', blank=True, null=True)
     follow_up_required = models.BooleanField("Follow-up", default=False)
     follow_up_notes = models.TextField("Follow-Up Notes", max_length=255, blank=True, null=True)
+    follow_up_completed = models.BooleanField("Completed", default=False)
 
     def __str__(self):
         return self.employee_id, self.notes
+
+
+class To_Do_Model(models.Model):
+    class Meta:
+        verbose_name = "To Do List"
+        verbose_name_plural = "To Do List"
+
+    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date = models.DateField("Date", default=datetime.today().strftime(("%m/%d/%Y")),
+               max_length=25, blank=True, null=True)
+    due_date = models.DateField("Due Date", max_length=25, blank=True, null=True)
+    task = models.CharField("Task", max_length=255, blank=True, null=True)
+    notes = models.CharField("Notes", max_length=255, blank=True, null=True)
+    document = models.FileField(upload_to='Tasks/', blank=True, null=True)
+    completed = models.BooleanField("Completed", default=False)
+
+    def __str__(self):
+        return self.due_date, self.task
 

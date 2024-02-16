@@ -43,7 +43,7 @@
 {#                Email: N/A#}
 {#            {%  endif %}#}
 {#        </h5>#}
-        <h5 class="text-center">Priority: {{ attorney.priority }}</h5>
+        <h5 class="text-center">Priority: <u>{{ attorney.priority }}</u></h5>
 {#        <h5 class="text-center">#}
 {#           {%  if attorney.resume %}#}
 {#                <a href="{{ attorney.resume.url }}" target="_blank">Resume</a>#}
@@ -76,124 +76,159 @@
         <div class="tab-content" id="myTabContent" style="border: 1px solid #ddd">
         {# METRICS TAB #}
             <div class="tab-pane fade show active" id="metrics" role="tabpanel" aria-labelledby="metrics-tab">
-                <div class="container-fluid">METRICS</div>
+                <div class="container">
+                    <br>
+                    <a href="" >
+                        <button class="btn btn-success btn-sm" style="float: right" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add New</button>
+                    </a>
+                <br><br>
+                </div>
             </div>
 
         {# NOTES TAB #}
             <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                 <div class="container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">From Name</th>
-                                <th scope="col">Notes / Message</th>
-                                <th class="text-center">F/U Required</th>
-                                <th scope="col">Follow-Up Notes</th>
-                                <th class="text-center" scope="col">Document</th>
-                                <th class="text-center" scope="col">Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for note in attorney_notes %}
-                            <tr>
-                                <td>{{note.date}}</td>
-                                <td>{{note.from_person}}</td>
-                                <td>{{note.notes}}</td>
-                                {%  if note.follow_up_required %}
-                                    <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
-                                {%  else %}
-                                    <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
-                                {%  endif %}
-                                <td>{{note.follow_up_notes}}</th>
-                                {%  if note.document %}
-                                    <td class="text-center"><a href="{{ note.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                                {%  else %}
-                                    <td class="text-center">N/A</td></a>
-                                {%  endif %}
-                                <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <br>
+                    <a href="{% url 'add_note' pk=attorney.employee_id %}" >
+                        <button class="btn btn-success btn-sm" style="float: right" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add New</button>
+                    </a>
+                    <br><br>
+                    {%  if attorney_notes %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">From Name</th>
+                                    <th scope="col">Notes / Message</th>
+                                    <th class="text-center">F/U Required</th>
+                                    <th scope="col">Follow-Up Notes</th>
+                                    <th class="text-center">Completed</th>
+                                    <th class="text-center" scope="col">Document</th>
+                                    <th class="text-center" scope="col">Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for note in attorney_notes %}
+                                <tr>
+                                    <td>{{note.date}}</td>
+                                    <td>{{note.from_person}}</td>
+                                    <td>{{note.notes}}</td>
+                                    {%  if note.follow_up_required %}
+                                        <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                                    {%  else %}
+                                        <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                                    {%  endif %}
+                                    <td>{{note.follow_up_notes}}</th>
+                                    {% if note.follow_up_required and note.follow_up_completed %}
+                                        <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                                    {% elif note.follow_up_required %}
+                                        <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                                    {%  else %}
+                                        <td class="text-center">N/A</td>
+                                    {%  endif %}
+                                    {%  if note.document %}
+                                        <td class="text-center"><a href="{{ note.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                    {%  else %}
+                                        <td class="text-center">N/A</td></a>
+                                    {%  endif %}
+                                    <td class="text-center"><a href="{% url 'edit_note' pk=note.id employee=note.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {%  endif %}
                 </div>
             </div>
 
         {# CALLS TAB #}
             <div class="tab-pane fade" id="calls" role="tabpanel" aria-labelledby="calls-tab">
                <div class="container">
-                  <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Call Date</th>
-                            <th scope="col">Call Time</th>
-                            <th scope="col">Duration</th>
-                            <th scope="col">Disp. Code</th>
-                            <th scope="col">Notes</th>
-                            <th scope="col">Attachment</th>
-                            <th class="text-center" scope="col">Reviewer</th>
-                            <th class="text-center" scope="col">Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for call in call_requests %}
-                        <tr>
-                            <td>{{call.date}}</td>
-                            <td>{{call.call_date}}</td>
-                            <td>{{call.call_time}}</td>
-                            <td>{{call.duration}}</th>
-                            <td>{{call.disposition}}</th>
-                            <td>{{call.notes}}</th>
-                            {%  if call.document %}
-                                    <td class="text-center"><a href="{{ call.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                                {%  else %}
-                                    <td class="text-center">N/A</td></a>
-                                {%  endif %}
-                            <td class="text-center">{{call.reviewer}}</td>
-                            <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                  </table>
+                   <br>
+                   <a href="{% url 'add_call' pk=attorney.employee_id %}" >
+                        <button class="btn btn-success btn-sm" style="float: right" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add New</button>
+                    </a>
+                    <br><br>
+                    {%  if call_requests %}
+                      <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Call Date</th>
+                                <th scope="col">Call Time</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Disp. Code</th>
+                                <th scope="col">Notes</th>
+                                <th scope="col">Attachment</th>
+                                <th class="text-center" scope="col">Reviewer</th>
+                                <th class="text-center" scope="col">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for call in call_requests %}
+                            <tr>
+                                <td>{{call.date}}</td>
+                                <td>{{call.call_date}}</td>
+                                <td>{{call.call_time}}</td>
+                                <td>{{call.duration}}</th>
+                                <td>{{call.disposition}}</th>
+                                <td>{{call.notes}}</th>
+                                {%  if call.document %}
+                                        <td class="text-center"><a href="{{ call.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                    {%  else %}
+                                        <td class="text-center">N/A</td></a>
+                                    {%  endif %}
+                                <td class="text-center">{{call.reviewer}}</td>
+                                <td class="text-center"><a href="{% url 'edit_call' pk=call.id employee=call.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+               {% endif %}
               </div>
             </div>
 
         {# COACHING TAB #}
             <div class="tab-pane fade" id="coaching" role="tabpanel" aria-labelledby="coaching-tab">
                 <div class="container">
-                  <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Method</th>
-                            <th scope="col">Related To</th>
-                            <th scope="col">Notes</th>
-                            <th scope="col">Attachment</th>
-                            <th class="text-center" scope="col">Delivered By</th>
-                            <th class="text-center" scope="col">Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for QA in attorney_QA %}
-                        <tr>
-                            <td>{{QA.qa_date}}</td>
-                            <td>{{QA.qa_time}}</td>
-                            <td>{{QA.method}}</th>
-                            <td>{{QA.related_to}}</th>
-                            <td>{{QA.qa_note}}</th>
-                            {%  if QA.document %}
-                                    <td class="text-center"><a href="{{ QA.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
-                                {%  else %}
-                                    <td class="text-center">N/A</td></a>
-                                {%  endif %}
-                            <td class="text-center">{{QA.delivered_by}}</td>
-                            <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                  </table>
+                    <br>
+                    <a href="{% url 'add_coaching' pk=attorney.employee_id %}" >
+                        <button class="btn btn-success btn-sm" style="float: right" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add New</button>
+                    </a>
+                    <br><br>
+                    {%  if attorney_QA %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Method</th>
+                                <th scope="col">Related To</th>
+                                <th scope="col">Notes</th>
+                                <th scope="col">Attachment</th>
+                                <th class="text-center" scope="col">Delivered By</th>
+                                <th class="text-center" scope="col">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for QA in attorney_QA %}
+                            <tr>
+                                <td>{{QA.qa_date}}</td>
+                                <td>{{QA.qa_time}}</td>
+                                <td>{{QA.method}}</th>
+                                <td>{{QA.related_to}}</th>
+                                <td>{{QA.qa_note}}</th>
+                                {%  if QA.document %}
+                                        <td class="text-center"><a href="{{ QA.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></td></a>
+                                    {%  else %}
+                                        <td class="text-center">N/A</td></a>
+                                    {%  endif %}
+                                <td class="text-center">{{QA.delivered_by}}</td>
+                                <td class="text-center"><a href="{% url 'edit_coaching' pk=QA.id employee=QA.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
                 </div>
             </div>
 
@@ -211,7 +246,7 @@
                                 <th scope="col">Denied</th>
                                 <th scope="col">Reasoning</th>
                                 <th class="text-center" scope="col">Attach</th>
-                                <th scope="col">Decision Manager</th>
+                                <th class="text-center scope="col">Decision Manager</th>
                                 <th class="text-center" scope="col">Edit</th>
                             </tr>
                         </thead>
@@ -241,7 +276,7 @@
                                         <td class="text-center">N/A</td>
                                     {%  endif %}
                                 <td class="text-center">{{hr_request.decision_manager}}</td>
-                                <td class="text-center"><a href="{% url 'edit_attorney_QA' pk=hr_request.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                                <td class="text-center"><a href=""><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
                             </tr>
                             {% endfor %}
                         </tbody>
