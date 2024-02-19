@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-6exf98mz6utq=fh7g-n-e5m2w&y7^+b4_1k=^0vnep1937nc5a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "don4law@pythonanywhere.com"]
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
+    'bootstrap_datepicker_plus',
     'attorneys.apps.AttorneysConfig',
     'managers.apps.ManagersConfig',
     'states.apps.StatesConfig',
@@ -167,6 +168,23 @@ MEDIA_URL = '/documents/'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+BOOTSTRAP_DATEPICKER_PLUS = {
+    "options": {
+        "locale": "en",
+    },
+    "variant_options": {
+        "date": {
+            "format": "MM/DD/YYYY",
+        },
+        "datetime": {
+            "format": "MM/DD/YYYY HH:mm",
+        },
+        "time": {
+            "format": "HH:mm",
+        }
+    }
+}
 
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_EXPIRE_SECONDS = 1800

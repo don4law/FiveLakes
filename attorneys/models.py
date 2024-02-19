@@ -6,6 +6,8 @@ from urllib import request
 from django.db.models import OneToOneField
 
 from django.contrib.auth.models import User
+from django import forms
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 from datetime import datetime, date
 from collections import OrderedDict
 from django.db import models
@@ -268,6 +270,12 @@ class HR_Requests_Model(models.Model):
         ('Other', 'Other'),
     ]
 
+    APPROVAL_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Denied', 'Denied'),
+    ]
+
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField("Date", default=datetime.today().strftime(("%m/%d/%Y")),
                max_length=25, blank=True, null=True)
@@ -276,10 +284,10 @@ class HR_Requests_Model(models.Model):
                 blank=False, null=True)
     request_note = models.CharField("Request Notes", max_length=255,
                 blank=True, null=True)
-    approved = models.BooleanField("Approved", default=False)
-    denied = models.BooleanField("Denied", default=False)
+    approval_status = models.CharField("Request Status", default="Pending", max_length=25, choices = APPROVAL_CHOICES,
+                blank=False, null=True)
     document = models.FileField(upload_to='HR/', blank=True, null=True)
-    reasoning = models.CharField("Reasoning", max_length=255,
+    reasoning = models.CharField("Decision Reasoning", max_length=255,
                 blank=True, null=True)
     decision_manager = models.CharField("Decision Manager", max_length=50, choices = MANAGER_OPTIONS,
                 blank=False, null=True)
@@ -308,8 +316,7 @@ class Call_Monitoring_Model(models.Model):
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField("Review Date", default=datetime.today().strftime(("%m/%d/%Y")),
                max_length=25, blank=True, null=True)
-    call_date = models.DateField("Call Date", default=datetime.today().strftime(("%m/%d/%Y")),
-               max_length=25, blank=True, null=True)
+    call_date = models.DateField("Call Date", max_length=25, blank=True, null=True)
     call_time = models.TimeField("Call Time", max_length=25, blank=True, null=True)
     duration = models.CharField("Duration", max_length=25, blank=True, null=True)
     disposition = models.CharField("Disposition", max_length=50, choices = DISPOSITION_CHOICES,
@@ -359,4 +366,30 @@ class To_Do_Model(models.Model):
 
     def __str__(self):
         return self.due_date, self.task
+
+
+class Metrics_Model(models.Model):
+    class Meta:
+        verbose_name = "Metrics"
+        verbose_name_plural = "Metrics"
+
+    METRIC_CHOICES = [
+        ('Attrition Rate', 'Attrition Rate'),
+        ('Call Timeliness', 'Call Timeliness'),
+        ('Review Completion', 'Review Completion'),
+        ('EA Completion', 'EA Completion'),
+        ('Pro Se Answer Reviews', 'Pro Se Answer Reviews'),
+        ('Other', 'Other'),
+    ]
+
+    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date = models.DateField("Metric Date", max_length=25, blank=False, null=True)
+    metric = models.CharField("Metric", max_length=25, choices = METRIC_CHOICES,
+                blank=False, null=True)
+    other_description = models.CharField("Metric", max_length=50, blank=True, null=True)
+    value = models.DecimalField("Value", decimal_places=2, max_digits=5, blank=False, null=True, )
+    document = models.FileField(upload_to='Metrics/', blank=True, null=True)
+
+    def __str__(self):
+        return self.metric, self.value
 

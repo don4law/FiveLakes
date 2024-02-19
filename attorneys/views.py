@@ -8,9 +8,9 @@ from django.forms import inlineformset_factory
 from managers.models import CustomUser
 from attorneys.models import Employee, Search_Attorneys_Model, QA_Model, \
     HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model, \
-    To_Do_Model
+    To_Do_Model, Metrics_Model
 from attorneys.forms import Search_Attorneys_Form, QA_Form, HR_Form, Call_Form, Attorney_Notes_Form, \
-    Edit_EmployeeForm1, Employee_More_Form, To_Do_Form
+    Edit_EmployeeForm1, Employee_More_Form, To_Do_Form, Metric_Form
 
 @login_required(login_url=reverse_lazy('login'))
 def attorney_view(request):
@@ -133,14 +133,20 @@ def attorney_data(request, pk=None):
 
     else:
         # Filter Data for context
-        attorney_QA = QA_Model.objects.filter(employee_id=pk).order_by('qa_date')
+        metrics_list = Metrics_Model.objects.filter(employee_id=pk).order_by('-date')
+        context.update({'metrics': metrics_list})
+        attorney_QA = QA_Model.objects.filter(employee_id=pk).order_by('-qa_date')
         context.update({'attorney_QA': attorney_QA})
-        hr_requests = HR_Requests_Model.objects.filter(employee_id=pk).order_by('date')
+        hr_requests = HR_Requests_Model.objects.filter(employee_id=pk).order_by('-date')
         context.update({'hr_requests': hr_requests})
-        call_requests = Call_Monitoring_Model.objects.filter(employee_id=pk).order_by('date')
+        call_requests = Call_Monitoring_Model.objects.filter(employee_id=pk).order_by('-date')
         context.update({'call_requests': call_requests})
-        attorney_notes = Attorney_Notes_Model.objects.filter(employee_id=pk).order_by('date')
+        attorney_notes = Attorney_Notes_Model.objects.filter(employee_id=pk).order_by('-date')
         context.update({'attorney_notes': attorney_notes})
+        # GET BLANK FORMS TO ADD ATTORNEY DATA
+        # GET form to add new instance for Metrics
+        MetricsForm = Metric_Form()
+        context.update({'MetricsForm': MetricsForm})
         # GET form to add new instance in QA
         QAForm = QA_Form()
         context.update({'QAForm': QAForm})
@@ -339,3 +345,71 @@ def delete_task(request, pk=None):
     task = To_Do_Model.objects.get(id=pk)
     task.delete()
     return HttpResponseRedirect(reverse('attorneys'))
+
+@login_required(login_url=reverse_lazy('login'))
+def add_metric(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=pk)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Metric_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+    else:
+        MetricForm = Metric_Form(instance=attorney_data)
+        context.update({'metricForm': MetricForm})
+        return render(request, 'templates/attorneys/add_metric.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_metric(request, pk=None, employee=None):
+    context = {'title': 'Edit Metric'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Metric_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+    else:
+        metric_instance = Metrics_Model.objects.get(id=pk, employee_id=employee)
+        metricForm = Metric_Form(instance=metric_instance)
+        context.update({'metricForm': metricForm})
+    return render(request, 'templates/attorneys/edit_metric.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def add_hr(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=pk)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = HR_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': pk}), context)
+    else:
+        HRForm = HR_Form(instance=attorney_data)
+        context.update({'hrForm': HRForm})
+        return render(request, 'templates/attorneys/add_hr.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_hr(request, pk=None, employee=None):
+    context = {'title': 'Edit Metric'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = HR_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+    else:
+        hr_instance = HR_Requests_Model.objects.get(id=pk, employee_id=employee)
+        hrForm = HR_Form(instance=hr_instance)
+        context.update({'hrForm': hrForm})
+    return render(request, 'templates/attorneys/edit_hr.html', context)

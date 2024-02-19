@@ -1,5 +1,7 @@
 # attorneys.forms
-
+from bootstrap_datepicker_plus.widgets import DatePickerInput, TimePickerInput, DateTimePickerInput
+from crispy_forms.bootstrap import Accordion, AccordionGroup, AppendedText, \
+    PrependedText, PrependedAppendedText, TabHolder, Tab
 from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
@@ -7,7 +9,7 @@ from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
 from states.models import get_managers
 from attorneys.models import Employee, Search_Attorneys_Model, QA_Model, \
     HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model, \
-    To_Do_Model
+    To_Do_Model, Metrics_Model
 
 # Alphabetized list of managers for choices
 managers=get_managers()
@@ -144,13 +146,16 @@ class Edit_EmployeeForm1(ModelForm):
         )
 
 
-
 class QA_Form(ModelForm):
     class Meta:
         model = QA_Model
         fields = ('qa_date', 'qa_time', 'method',
                   'related_to', 'delivered_by',
                   'qa_note', 'document')
+        widgets = {
+            'qa_date': DatePickerInput(),
+            'qa_time': TimePickerInput(),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -183,9 +188,13 @@ class HR_Form(ModelForm):
     class Meta:
         model = HR_Requests_Model
         fields = ('date', 'time', 'request_type',
-                  'request_note', 'approved',
-                  'denied', 'document', 'reasoning',
+                  'request_note', 'approval_status',
+                  'document', 'reasoning',
                   'decision_manager')
+        widgets = {
+            'date': DatePickerInput(),
+            'time': TimePickerInput()
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -202,11 +211,9 @@ class HR_Form(ModelForm):
             ),
             Row(
                 Column('request_note',
-                       css_class='form-group col-md-6 mb-0'),
-                Column('approved',
-                       css_class='form-group col-md-2 mb-0'),
-                Column('denied',
-                       css_class='form-group col-md-2 mb-0'),
+                       css_class='form-group col-md-8 mb-0'),
+                Column('approval_status',
+                       css_class='form-group col-md-4 mb-0'),
             ),
             Row(
                 Column('reasoning',
@@ -223,6 +230,11 @@ class Call_Form(ModelForm):
         model = Call_Monitoring_Model
         fields = ('date', 'call_date', 'call_time', 'duration',
                   'disposition', 'notes', 'document', 'reviewer')
+        widgets = {
+            'date': DatePickerInput(),
+            'call_date': DatePickerInput(),
+            'call_time': TimePickerInput()
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -236,7 +248,7 @@ class Call_Form(ModelForm):
                        css_class='form-group col-md-3 mb-0'),
                 Column('call_time',
                        css_class='form-group col-md-3 mb-0'),
-                Column('duration',
+                Column(AppendedText('duration', "minutes"),
                        css_class='form-group col-md-3 mb-0'),
             ),
             Row(
@@ -258,6 +270,9 @@ class Attorney_Notes_Form(ModelForm):
         model = Attorney_Notes_Model
         fields = ('date', 'from_person', 'notes', 'follow_up_required',
                   'follow_up_notes', 'document', 'follow_up_completed')
+        widgets = {
+            'date': DatePickerInput(),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -291,6 +306,10 @@ class To_Do_Form(ModelForm):
         model = To_Do_Model
         fields = ('date', 'due_date', 'task', 'notes',
                   'document', 'completed')
+        widgets = {
+            'date': DatePickerInput(),
+            'due_date': DatePickerInput()
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -311,5 +330,30 @@ class To_Do_Form(ModelForm):
 
                 Column('completed',
                        css_class='form-group col-md-2 mb-0'),
+                ),
+            )
+
+class Metric_Form(ModelForm):
+    class Meta:
+        model = Metrics_Model
+        fields = ('date', 'metric', 'other_description', 'value', 'document')
+        widgets = {
+            'date': DatePickerInput()
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('date',
+                       css_class='form-group col-md-3 mb-0'),
+                Column('metric',
+                       css_class='form-group col-md-3 mb-0'),
+                Column(AppendedText('value', '%'),
+                       css_class='form-group col-md-2 mb-0'),
+                Column('document',
+                       css_class='form-group col-md-3 mb-0'),
                 ),
             )

@@ -1,5 +1,5 @@
 # recruiting.forms
-
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
@@ -15,10 +15,13 @@ class Applicant_Form(ModelForm):
 
     class Meta:
         model = Applicant
-        fields = ['state_abbrev', 'position', 'five_lakes_firm',
+        fields = ['application_date', 'state_abbrev', 'position', 'five_lakes_firm',
                   'huron_firm', 'gender', 'first_name', 'middle_name',
                   'last_name', 'phone', 'email', 'source', 'employee_referral_name',
                   'salary', 'resume', 'initial_notes']
+        widgets = {
+            'application_date': DatePickerInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,6 +30,8 @@ class Applicant_Form(ModelForm):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Row(
+                Column('application_date',
+                       css_class='form-group col-md-2 mb-0'),
                 Column('state_abbrev',
                        css_class='form-group col-md-2 mb-0'),
                 Column('position',
@@ -140,7 +145,9 @@ class Interview1_Form(ModelForm):
     class Meta:
         model = Interview1_Model
         fields = '__all__'
-
+        widgets = {
+            'interview1_date': DatePickerInput(),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -179,7 +186,9 @@ class Interview2_Form(ModelForm):
     class Meta:
         model = Interview2_Model
         fields = '__all__'
-
+        widgets = {
+            'interview2_date': DatePickerInput(),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -224,6 +233,10 @@ class FinalStep_Form(ModelForm):
     class Meta:
         model = FinalStep_Model
         fields = '__all__'
+        widgets = {
+            'start_date': DatePickerInput(),
+            'offer_letter_email_date': DatePickerInput()
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -237,7 +250,7 @@ class FinalStep_Form(ModelForm):
             ),
             Row(
                 Column('start_date',
-                       css_class='form-group col-md-4 mb-0'),
+                       css_class='form-group col-md-3 mb-0'),
             ),
             Row(
                 Column('offer_letter_email_date',

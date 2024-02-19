@@ -87,6 +87,7 @@ class Applicant(models.Model):
     ]
 
     is_active = models.BooleanField("Is Active", default=True, blank=True, null=True)
+    application_date = models.DateField("Application Date", blank=True, null=True)
     state_abbrev = models.CharField("State", max_length=25,
         choices = STATE_CHOICES, blank=False, null=True)
     position = models.CharField("Position", max_length=25,
