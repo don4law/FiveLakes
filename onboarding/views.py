@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from datetime import date, datetime, timezone
 from django.utils.dateparse import parse_datetime
 from attorneys.models import Employee, Employee_More_Model
-from onboarding.models import Onboarding_Detail_Model
-from onboarding.forms import Onboarding_Form, Onboarding_Form2
+# from onboarding.models import Onboarding_Detail_Model
+# from onboarding.forms import Onboarding_Form, Onboarding_Form2
 
 @login_required(login_url=reverse_lazy('login'))
 def onboarding_view(request):

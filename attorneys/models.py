@@ -148,7 +148,7 @@ class Employee(models.Model):
         ('Low', 'Low'),
     ]
 
-    employee_id = models.IntegerField("Employee ID", primary_key=True)
+    employee_id = models.BigAutoField("Employee ID", primary_key=True)
     is_active = models.BooleanField("Is Active", default=True, blank=True, null=True)
     state_abbrev = models.CharField("State", max_length=25,
         choices = STATE_CHOICES, blank=False, null=True)
