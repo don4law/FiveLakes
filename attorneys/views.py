@@ -53,6 +53,7 @@ def attorney_view(request):
     # Filter the NOTES list, then filter the list.
     manager_user = CustomUser.objects.get(id = request.user.id)
     manager_name = manager_user.first_name + " " + manager_user.last_name
+    manager_id = manager_user.id
     for employee in Employee.objects.all():
         if employee.manager == manager_name:
             manager_id = employee.employee_id
