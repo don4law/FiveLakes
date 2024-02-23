@@ -93,7 +93,7 @@ class Edit_EmployeeForm1(ModelForm):
         model = Employee
         fields = ['state_abbrev', 'position', 'manager', 'five_lakes_firm',
                   'huron_firm', 'gender', 'first_name', 'middle_name',
-                  'last_name', 'phone', 'email', 'priority',
+                  'last_name', 'phone', 'email', 'priority', 'start_date',
                   'salary', 'resume', 'prev_page']
 
     def __init__(self, *args, **kwargs):
@@ -104,6 +104,8 @@ class Edit_EmployeeForm1(ModelForm):
         self.helper.layout = Layout(
                 Field('prev_page', type="hidden"),
             Row(
+                Column('start_date',
+                       css_class='form-group col-md-2 mb-0'),
                 Column('priority',
                        css_class='form-group col-md-2 mb-0'),
             ),
@@ -229,7 +231,8 @@ class Call_Form(ModelForm):
     class Meta:
         model = Call_Monitoring_Model
         fields = ('date', 'call_date', 'call_time', 'duration',
-                  'disposition', 'notes', 'document', 'reviewer')
+                  'disposition', 'notes', 'document', 'reviewer',
+                  'call_url',)
         widgets = {
             'date': DatePickerInput(),
             'call_date': DatePickerInput(),
@@ -252,8 +255,10 @@ class Call_Form(ModelForm):
                        css_class='form-group col-md-3 mb-0'),
             ),
             Row(
+                Column('call_url',
+                       css_class='form-group col-md-3 mb-0'),
                 Column('notes',
-                       css_class='form-group col-md-12 mb-0'),
+                       css_class='form-group col-md-9 mb-0'),
             ),
             Row(
                 Column('disposition',
@@ -336,7 +341,7 @@ class To_Do_Form(ModelForm):
 class Metric_Form(ModelForm):
     class Meta:
         model = Metrics_Model
-        fields = ('date', 'metric', 'other_description', 'value', 'document')
+        fields = ('date', 'metric', 'other_description', 'value', 'document', 'timeframe',)
         widgets = {
             'date': DatePickerInput()
         }
@@ -348,6 +353,8 @@ class Metric_Form(ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('date',
+                       css_class='form-group col-md-3 mb-0'),
+                Column('timeframe',
                        css_class='form-group col-md-3 mb-0'),
                 Column('metric',
                        css_class='form-group col-md-3 mb-0'),

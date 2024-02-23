@@ -168,7 +168,7 @@ class Employee(models.Model):
     huron_firm = models.BooleanField("Huron Law Group", default=False)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     hire_date = models.DateField("Start Date", max_length=255, blank=True, null=True)
-    start_date = models.DateField("Start Date", max_length=255, blank=False, null=True)
+    start_date = models.DateField("Start Date", max_length=255, blank=True, null=True)
     onboarding_step = models.CharField("Last Name", max_length=50, blank=True, null=True)
     onboarding_complete = models.BooleanField("Onboarding Complete", default=False)
     priority = models.CharField("Criticality Level", max_length=10,
@@ -246,7 +246,7 @@ class QA_Model(models.Model):
                 blank=False, null=True)
     related_to = models.CharField("Related To", max_length=25, choices = RELATED_TO_CHOICES,
                 blank=False, null=True)
-    qa_note = models.TextField("Coaching and QA Notes", max_length=255,
+    qa_note = models.TextField("Coaching and QA Notes",
                 blank=True, null=True)
     document = models.FileField(upload_to='QA/', blank=True, null=True)
     delivered_by = models.CharField("Author", max_length=50, choices = MANAGER_OPTIONS,
@@ -318,10 +318,11 @@ class Call_Monitoring_Model(models.Model):
                max_length=25, blank=True, null=True)
     call_date = models.DateField("Call Date", max_length=25, blank=True, null=True)
     call_time = models.TimeField("Call Time", max_length=25, blank=True, null=True)
+    call_url = models.URLField("Call url", blank=True, null=True)
     duration = models.CharField("Duration", max_length=25, blank=True, null=True)
     disposition = models.CharField("Disposition", max_length=50, choices = DISPOSITION_CHOICES,
                 blank=False, null=True)
-    notes = models.TextField("Call Notes", max_length=255, blank=True, null=True)
+    notes = models.TextField("Call Notes", blank=True, null=True)
     document = models.FileField(upload_to='Calls/', blank=True, null=True)
     reviewer = models.CharField("Reviewer", max_length=50, choices = MANAGER_OPTIONS,
                 blank=False, null=True)
@@ -340,10 +341,10 @@ class Attorney_Notes_Model(models.Model):
     date = models.DateField("Review Date", default=datetime.today().strftime(("%m/%d/%Y")),
                max_length=25, blank=True, null=True)
     from_person = models.CharField("From (Name)", max_length=50, blank=True, null=True)
-    notes = models.TextField("Notes / Messages", max_length=255, blank=True, null=True)
+    notes = models.TextField("Notes / Messages", blank=True, null=True)
     document = models.FileField(upload_to='Notes/', blank=True, null=True)
     follow_up_required = models.BooleanField("Follow-up", default=False)
-    follow_up_notes = models.TextField("Follow-Up Notes", max_length=255, blank=True, null=True)
+    follow_up_notes = models.TextField("Follow-Up Notes", blank=True, null=True)
     follow_up_completed = models.BooleanField("Completed", default=False)
 
     def __str__(self):
@@ -373,9 +374,19 @@ class Metrics_Model(models.Model):
         verbose_name = "Metrics"
         verbose_name_plural = "Metrics"
 
+    TIMEFRAME_CHOICES = [
+        ('Daily', 'Daily'),
+        ('Weekly', 'Weekly'),
+        ('Monthly', 'Monthly'),
+        ('Quarter', 'Quarterly'),
+        ('Annual', 'Annual'),
+    ]
+
     METRIC_CHOICES = [
         ('Attrition Rate', 'Attrition Rate'),
+        ('Bandwidth', 'Bandwidth'),
         ('Call Timeliness', 'Call Timeliness'),
+        ('Missing Dispo Codes', 'Missing Dispo Codes'),
         ('Review Completion', 'Review Completion'),
         ('EA Completion', 'EA Completion'),
         ('Pro Se Answer Reviews', 'Pro Se Answer Reviews'),
@@ -384,6 +395,8 @@ class Metrics_Model(models.Model):
 
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField("Metric Date", max_length=25, blank=False, null=True)
+    timeframe = models.CharField("Timeframe", max_length=25, choices = TIMEFRAME_CHOICES,
+                blank=False, null=True)
     metric = models.CharField("Metric", max_length=25, choices = METRIC_CHOICES,
                 blank=False, null=True)
     other_description = models.CharField("Metric", max_length=50, blank=True, null=True)

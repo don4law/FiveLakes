@@ -92,7 +92,7 @@ class Applicant(models.Model):
         choices = STATE_CHOICES, blank=False, null=True)
     position = models.CharField("Position", max_length=25,
         choices = EMPLOYMENT_OPTIONS, blank=True, null=False, default="Full-Time")
-    salary = models.CharField("Salary", max_length=10, default = "80,000", blank=False, null=False)
+    salary = models.CharField("Salary", max_length=10, default = "80,000", blank=True, null=True)
     manager = models.CharField("Manager", max_length=50,
         choices = MANAGER_OPTIONS, blank=True, null=False, default="")
     step = models.CharField("Step", max_length=25,
@@ -110,7 +110,7 @@ class Applicant(models.Model):
     five_lakes_firm = models.BooleanField("Five Lakes Law Group", default=True)
     huron_firm = models.BooleanField("Huron Law Group", default=False)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    initial_notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+    initial_notes = models.TextField("Notes", blank=True, null=True)
 
     def __str__(self):
         return self.last_name + ", " + self.first_name + " " + self.middle_name
@@ -130,7 +130,7 @@ class Interview1_Model(models.Model):
     interview1_date = models.DateField("First Interview Date", blank=True, null=True)
     interviewer1_manager = models.CharField("Interviewer", max_length=25,
         choices = MANAGER_CHOICES, blank=True, null=True)
-    interview1_notes = models.TextField("Notes", max_length=255, blank=True, null=True)
+    interview1_notes = models.TextField("Notes", blank=True, null=True)
     interview1_completed = models.BooleanField("First Interview Completed", default=False)
     approved_to_continue = models.BooleanField("Approved to Continue", default=False)
     decline_email_sent = models.BooleanField("Decline Email Sent", default=False)
@@ -153,10 +153,10 @@ class Interview2_Model(models.Model):
     interview2_date = models.DateField("Second Interview Date", blank=True, null=True)
     interviewer2_manager1 = models.CharField("Interviewer #1", max_length=25,
         choices = MANAGER_CHOICES, blank=True, null=True)
-    interview2_notes1 = models.TextField("Interviewer #1 Notes", max_length=255, blank=True, null=True)
+    interview2_notes1 = models.TextField("Interviewer #1 Notes", blank=True, null=True)
     interviewer2_manager2 = models.CharField("Interviewer # 2", max_length=25,
         choices = MANAGER_CHOICES, blank=True, null=True)
-    interview2_notes2 = models.TextField("Interviewer # 2 Notes", max_length=255, blank=True, null=True)
+    interview2_notes2 = models.TextField("Interviewer # 2 Notes", blank=True, null=True)
     interview2_completed = models.BooleanField("Second Interview Completed", default=False)
     approved_to_continue = models.BooleanField("Approved to Continue", default=False)
     decline_email_sent = models.BooleanField("Decline Email Sent", default=False)

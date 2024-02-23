@@ -83,6 +83,7 @@
                                 <th scope="col">Position</th>
                                 <th scope="col">Attorney Name</th>
                                 <th scope="col">Manager</th>
+                                <th class="text-center" scope="col">Start Date</th>
                                 <th class="text-center" scope="col">Resume</th>
                                 <th class="text-center" scope="col">Edit</th>
                                 <th class="text-center" scope="col">QA Priority</th>
@@ -95,6 +96,7 @@
                                     <td>{{attorney.position}}</td>
                                     <td><a href="attorney_data/{{ attorney.employee_id }}">{{ attorney.first_name }} {{ attorney.middle_name }} {{ attorney.last_name}}</a></td>
                                     <td>{{attorney.manager}}</td>
+                                    <td class="text-center">{{attorney.start_date|date:'m/d/Y'}}</td>
                                     {%  if attorney.resume %}
                                         <td class="text-center"><a href="{{ attorney.resume.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></a></td>
                                     {%  else %}
@@ -242,7 +244,7 @@
                         </tr>
                     </thead>
                 </table>
-                <p>TEST TO DO GOES HERE</p>
+                <p>ISSUES WILL GO HERE</p>
             </div>
           </div>
         </div>

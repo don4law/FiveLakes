@@ -48,24 +48,28 @@ def attorney_view(request):
         context.update({'search_criteria': 'priority'})
         context.update({'search_term': search_criteria[0].search_priority})
     context.update({'attorney_list': attorneys})
-
-    # First, current logged in manager id associated with attorney/employee to
-    # Filter the NOTES list, then filter the list.
-    manager_user = CustomUser.objects.get(id = request.user.id)
+    # CODE TO GET TICKLER FOR MAIN ATTORNEY PAGE
+    # First, get manager's name to join with name for employee/attorney
+    manager_id = request.user.id
+    context.update({'manager_id': manager_id})
+    manager_user = CustomUser.objects.get(id = manager_id)
     manager_name = manager_user.first_name + " " + manager_user.last_name
-    manager_id = manager_user.id
+    # Second, get list of all employees/attorneys managed by logged in Manager
+    employee_list = []
     for employee in Employee.objects.all():
         if employee.manager == manager_name:
-            manager_id = employee.employee_id
-    user_notes_list = Attorney_Notes_Model.objects.filter(employee_id_id = manager_id, follow_up_required=True, follow_up_completed=False).order_by('date')
-    context.update({'manager_id': manager_id})
+            employee_list.append(employee.employee_id)
+    # Third, get all user notes for employees
+    user_notes_list = Attorney_Notes_Model.objects.filter(employee_id_id__in=employee_list,
+                    follow_up_required=True, follow_up_completed=False).order_by('date')
     # Now need name of each employee for each tickler note in the NOTE for template
-    for notes in user_notes_list:
+    for note in user_notes_list:
         for employee in Employee.objects.all():
-            if notes.employee_id_id == employee.employee_id:
-                setattr(notes, "employee_name", employee.first_name + " " + employee.last_name)
+            if note.employee_id_id == employee.employee_id:
+                setattr(note, "employee_name", employee.first_name + " " + employee.last_name)
     tickler_list = user_notes_list
     context.update({'tickler_list': tickler_list})
+
     # Get Each Managers task list
     to_do_list = To_Do_Model.objects.filter(employee_id_id = manager_id)
     # Now need name of each employee for each tickler note in the NOTE for template
@@ -76,6 +80,7 @@ def attorney_view(request):
     to_do = to_do_list
     context.update({'to_do_list': to_do})
     return render(request, 'templates/attorneys.html', context)
+
 
 # View to edit all attorney profile data and return to onboarding
 @login_required(login_url=reverse_lazy('login'))
@@ -380,6 +385,32 @@ def edit_metric(request, pk=None, employee=None):
         metricForm = Metric_Form(instance=metric_instance)
         context.update({'metricForm': metricForm})
     return render(request, 'templates/attorneys/edit_metric.html', context)
+
+@login_required(login_url=reverse_lazy('login'))
+def delete_metric(request, pk=None):
+    context = {'title': 'Attorneys'}
+    metric = Metrics_Model.objects.get(id=pk)
+    metric.delete()
+    return HttpResponseRedirect(reverse('attorneys'))
+
+@login_required(login_url=reverse_lazy('login'))
+def delete_note(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    note = Attorney_Notes_Model.objects.get(id=pk)
+    note.delete()
+    return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+
+
+@login_required(login_url=reverse_lazy('login'))
+def delete_QA(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    qa = QA_Model.objects.get(id=pk)
+    qa.delete()
+    return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
 
 @login_required(login_url=reverse_lazy('login'))
 def add_hr(request, pk=None):

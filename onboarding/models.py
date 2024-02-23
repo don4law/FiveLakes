@@ -22,7 +22,7 @@ class Onboarding_Detail_Model(models.Model):
     MANAGER_OPTIONS  = get_managers
 
     # Administrative Tasks
-    # employee_id = models.OneToOneField(Employee, on_delete=models.CASCADE)
+    employee_id = models.OneToOneField(Employee, on_delete=models.CASCADE)
     add_attorney_more = models.BooleanField("Add additional employee data", default=False)
     pause_job = models.BooleanField("Pause job posting; review and save pending resumes (if needed)", default=False)
     send_onboarding_email = models.BooleanField("Send onboarding email to: ", default=False)

@@ -22,6 +22,10 @@ urlpatterns = [
     path('edit_metric/<employee>/<pk>/', views.edit_metric, name="edit_metric"),
     path('add_hr/<pk>/', views.add_hr, name="add_hr"),
     path('edit_hr/<employee>/<pk>/', views.edit_hr, name="edit_hr"),
+    path('delete_metric/<pk>/', views.delete_metric, name="delete_metric"),
+    path('delete_QA/<employee>/<pk>/', views.delete_QA, name="delete_QA"),
+    path('delete_note/<employee>/<pk>/', views.delete_note, name="delete_note"),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -25,12 +25,12 @@ class Onboarding_Form2(ModelForm):
                   'intro_training_date', 'salesforce_training', 'salesforce_training_date',
                   'script_training', 'script_training_date', 'attorney_pp_training', 'attorney_pp_date',
                   'touchbase_meeting', 'touchbase_date', 'onboarding_completed',]
-        widgets = {
-            'intro_training': DatePickerInput(),
-            'salesforce_training_date': DatePickerInput(),
-            'script_training': DatePickerInput(),
-            'attorney_pp_date': DatePickerInput(),
-            'touchbase_date': DatePickerInput()
-        }
+        # widgets = {
+        #     'intro_training': DatePickerInput(),
+        #     'salesforce_training_date': DatePickerInput(),
+        #     'script_training_date': DatePickerInput(),
+        #     'attorney_pp_date': DatePickerInput(),
+        #     'touchbase_date': DatePickerInput()
+        # }
 
 

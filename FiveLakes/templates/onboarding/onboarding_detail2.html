@@ -35,6 +35,7 @@
             <h4><u>2.  Send Onboarding / Training Docs to Attorney</u></h4>
             <div class="form-selection">
                 {% csrf_token %}
+                {{  form.media }}
                 {{ onboarding_form.non_form_errors }}
                 <p style="font-size: large">{{ onboarding_form.send_pp_docs }}&nbsp;&nbsp;&nbsp;P&Ps, Sample Enrollment Docs, Sales Agent Scripts, BLP Docs, & Settlements Spreadsheet</p>
                 <p style="font-size: large">{{ onboarding_form.send_software_docs }}&nbsp;&nbsp;&nbsp;Software</p>
