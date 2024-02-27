@@ -356,9 +356,8 @@ class To_Do_Model(models.Model):
         verbose_name = "To Do List"
         verbose_name_plural = "To Do List"
 
-    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    date = models.DateField("Date", default=datetime.today().strftime(("%m/%d/%Y")),
-               max_length=25, blank=True, null=True)
+    employee_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    date = models.DateField("Date", max_length=25, blank=True, null=True)
     due_date = models.DateField("Due Date", max_length=25, blank=True, null=True)
     task = models.CharField("Task", max_length=255, blank=True, null=True)
     notes = models.CharField("Notes", max_length=255, blank=True, null=True)

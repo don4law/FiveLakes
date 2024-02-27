@@ -71,7 +71,11 @@ def attorney_view(request):
     context.update({'tickler_list': tickler_list})
 
     # Get Each Managers task list
-    to_do_list = To_Do_Model.objects.filter(employee_id_id = manager_id)
+    manager_id = request.user.id
+    try:
+        to_do_list = To_Do_Model.objects.filter(employee_id_id=manager_id)
+    except:
+        to_do_list = To_Do_Model.objects.get_or_create(employee_id_id=manager_id)[0]
     # Now need name of each employee for each tickler note in the NOTE for template
     for to_do in to_do_list:
         for employee in Employee.objects.all():
@@ -313,7 +317,7 @@ def edit_coaching(request, pk=None, employee=None):
 @login_required(login_url=reverse_lazy('login'))
 def add_todo(request, pk=None):
     context = {'title': 'Attorneys'}
-    attorney_data = Employee.objects.get(employee_id=pk)
+    attorney_data = CustomUser.objects.get(pk=request.user.id)
     context.update({'attorney': attorney_data})
     if request.method == "POST":
         form = To_Do_Form(request.POST, request.FILES)
@@ -326,15 +330,23 @@ def add_todo(request, pk=None):
         context.update({'todoForm': ToDoForm})
         return render(request, 'templates/attorneys/add_todo.html', context)
 
+
+@login_required(login_url=reverse_lazy('login'))
+def delete_task(request, pk=None):
+    context = {'title': 'Attorneys'}
+    task = To_Do_Model.objects.get(id=pk)
+    task.delete()
+    return HttpResponseRedirect(reverse('attorneys'))
+
 @login_required(login_url=reverse_lazy('login'))
 def edit_task(request, pk=None, employee=None):
     context = {'title': 'Attorneys'}
-    attorney_data = Employee.objects.get(employee_id=employee)
+    attorney_data = CustomUser.objects.get(pk=request.user.id)
     context.update({'attorney': attorney_data})
     if request.method == "POST":
         form = To_Do_Form(request.POST, request.FILES)
         form.instance.id = pk
-        form.instance.employee_id_id = employee
+        form.instance.employee_id_id = request.user.id
         if form.is_valid():
             form.save()
         return HttpResponseRedirect(reverse_lazy('attorneys'))
@@ -344,13 +356,6 @@ def edit_task(request, pk=None, employee=None):
         context.update({'todoForm': TaskForm})
         return render(request, 'templates/attorneys/edit_todo.html', context)
 
-
-@login_required(login_url=reverse_lazy('login'))
-def delete_task(request, pk=None):
-    context = {'title': 'Attorneys'}
-    task = To_Do_Model.objects.get(id=pk)
-    task.delete()
-    return HttpResponseRedirect(reverse('attorneys'))
 
 @login_required(login_url=reverse_lazy('login'))
 def add_metric(request, pk=None):

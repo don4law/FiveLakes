@@ -143,7 +143,7 @@
                     <tbody>
                         {% for tickler in tickler_list %}
                         <tr>
-                            <td>{{tickler.date}}</td>
+                            <td>{{tickler.date|date:'m/d/y'}}</td>
                             <td>{{tickler.from_person}}</td>
                             <td><a href="{% url 'attorney_data' pk=tickler.employee_id_id %}">{{tickler.employee_name}}</td>
                             <td>{{tickler.notes}}</td>
@@ -202,8 +202,8 @@
                             {% else %}
                                 <tr>
                             {% endif %}
-                                   <td>{{ task.date }}</td>
-                                   <td>{{ task.due_date }}</td>
+                                   <td>{{ task.date|date:'m/d/y' }}</td>
+                                   <td>{{ task.due_date|date:'m/d/y' }}</td>
                                    <td>{{ task.task }}</td>
                                    <td>{{ task.notes }}</td>
                                     {%  if task.document %}
@@ -216,7 +216,7 @@
                                     {% else %}
                                         <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
                                     {%  endif %}
-                                    <td class="text-center"><a href="{% url 'edit_task' pk=task.id employee=task.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
+                                    <td class="text-center"><a href="{% url 'edit_task' pk=task.id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></td> {# Edit #}
                                     <td class="text-center"><a href="{% url 'delete_task' pk=task.id %}"><i class="fa-solid fa-trash fa-lg"></i></td> {# Delete #}
                                 </tr>
                         {% endfor %}
