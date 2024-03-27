@@ -230,21 +230,53 @@
         <div class="tab-pane fade" id="issues" role="tabpanel" aria-labelledby="issues-tab">
             <div class="container">
                 <br>
+                    <a href="{% url 'add_issue' pk=manager_id %}" >
+                        <button class="btn btn-success btn-sm" style="float: right" type="submit"><i class="fa-duotone fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Add Issue</button>
+                    </a>
+                <br><br>
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">Date</th>
                             <th scope="col">From Name</th>
                             <th scope="col">Attorney</th>
-                            <th scope="col">Notes / Message</th>
+                            <th scope="col">Issue Description</th>
                             <th class="text-center">f/u Required</th>
                             <th scope="col">Follow-Up Notes</th>
                             <th scope="col">Document</th>
                             <th class="text-center" scope="col">Edit</th>
                         </tr>
                     </thead>
+                        <tbody>
+                        {% for issue in issue_list %}
+                        <tr>
+                            <td>{{issue.date|date:'m/d/y'}}</td>
+                            <td>{{issue.from_person}}</td>
+                            <td><a href="{% url 'attorney_data' pk=issue.employee_id_id %}">{{issue.employee_name}}</td>
+                            <td>{{issue.issue}}</td>
+                            {%  if issue.follow_up_required %}
+                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></td>
+                            {%  else %}
+                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></td>
+                            {%  endif %}
+{#                            <td>{{issue.follow_up_notes}}</td>#}
+                            {% if issue.follow_up_required and issue.follow_up_completed %}
+                                <td class="text-center"><i class="fa-solid fa-check fa-xl" style="color:green"></i></th>
+                            {% elif issue.follow_up_required %}
+                                <td class="text-center"><i class="fa-solid fa-xmark fa-xl" style="color:red"></i></th>
+                            {%  else %}
+                                <td class="text-center">N/A</td>
+                            {%  endif %}
+                            {%  if issue.document %}
+                                <td class="text-center"><a href="{{ issue.document.url }}" target="_blank"><i class="fa-solid fa-file fa-lg"></i></a></td>
+                            {%  else %}
+                                <td class="text-center">N/A</td>
+                            {%  endif %}
+                            <td class="text-center"><a href="{% url 'edit_issue' pk=issue.id employee=issue.employee_id_id %}"><i class="fa-solid fa-pen-to-square fa-lg"></i></a></td> {# Edit #}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
-                <p>ISSUES WILL GO HERE</p>
             </div>
           </div>
         </div>

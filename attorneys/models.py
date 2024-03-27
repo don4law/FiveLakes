@@ -43,6 +43,18 @@ def get_manager_options():
         MANAGER_OPTIONS.append(each_manager)
     return MANAGER_OPTIONS
 
+def get_attorneys():
+    try:
+        attorneys = Employee.objects.all().order_by('first_name', 'last_name')
+        attorney_list = []
+        for attorney in attorneys:
+            attorney_name = attorney.first_name + " " + attorney.last_name
+            attorney_tuple = (attorney.employee_id, attorney_name)
+            attorney_list.append(attorney_tuple)
+    except:
+        attorney_list = []
+    return attorney_list
+
 def get_active_attorneys():
     # LIST FOR ATTORNEY
     attorneys_list = Employee.objects.filter(is_active=True, onboarding_complete=True).order_by('manager')
@@ -306,9 +318,11 @@ class Call_Monitoring_Model(models.Model):
         ('None', 'None'),
         ('Left Voicemail', 'Left Voicemail'),
         ('Incomplete Consult', 'Incomplete Consult'),
+        ('Positive Consult', 'Positive Consult'),
         ('Credit Concerns', 'Credit Concerns'),
         ('Lawsuit Concerns', 'Lawsuit Concerns'),
         ('Requested Cancellation', 'Requested Cancellation'),
+        ('Reconsidering Program', 'Reconsidering Program'),
         ('No Answer', 'No Answer'),
         ('Cancellation Prior to Consult', 'Cancellation Prior to Consult'),
     ]
@@ -318,7 +332,7 @@ class Call_Monitoring_Model(models.Model):
                max_length=25, blank=True, null=True)
     call_date = models.DateField("Call Date", max_length=25, blank=True, null=True)
     call_time = models.TimeField("Call Time", max_length=25, blank=True, null=True)
-    call_url = models.URLField("Call url", blank=True, null=True)
+    call_url = models.URLField("Call url (https://app.iz1.sharpen.cx/contactCard/)", blank=True, null=True)
     duration = models.CharField("Duration", max_length=25, blank=True, null=True)
     disposition = models.CharField("Disposition", max_length=50, choices = DISPOSITION_CHOICES,
                 blank=False, null=True)
@@ -405,3 +419,24 @@ class Metrics_Model(models.Model):
     def __str__(self):
         return self.metric, self.value
 
+
+class Issues_Model(models.Model):
+    class Meta:
+        verbose_name = "Issues Log"
+        verbose_name_plural = "Issues Log"
+
+    ATTORNEY_CHOICES  = get_attorneys()
+
+    employee_id = models.ForeignKey(Employee, max_length=50,
+        choices = ATTORNEY_CHOICES, blank=True, null=True, on_delete=models.CASCADE)
+    date = models.DateField("Review Date", default=datetime.today().strftime(("%m/%d/%Y")),
+               max_length=25, blank=True, null=True)
+    from_person = models.CharField("From (Name)", max_length=50, blank=True, null=True)
+    issue = models.TextField("Issue Description", blank=True, null=True)
+    document = models.FileField(upload_to='Notes/', blank=True, null=True)
+    follow_up_required = models.BooleanField("Follow-up", default=False)
+    follow_up_notes = models.TextField("Follow-Up Notes", blank=True, null=True)
+    follow_up_completed = models.BooleanField("Completed", default=False)
+
+    def __str__(self):
+        return self.manager_id, self.employee_id, self.notes

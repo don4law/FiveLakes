@@ -1,0 +1,41 @@
+{% extends 'templates/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block menu %}
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'states' %}">State Data</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'recruiting' %}">Recruiting</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'onboarding' %}">Onboarding</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded active" href="{% url 'attorneys' %}">Attorneys</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#reports">Reports</a></li>
+    </ul>
+</div>
+{% endblock menu %}
+
+{% block header %}
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h4 class="masthead-heading text-uppercase mb-0">Attorneys</h4>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}}
+    <div class="container">
+        <h4><u>Edit Issue</u></h4>
+    </div>
+    <div class="container">
+      <form method="post" enctype="multipart/form-data">
+        <div class="form-selection">
+            {% csrf_token %}
+            {{ issueForm.non_form_errors }}
+            {% crispy issueForm %}
+        </div>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-secondary">Submit</button>
+        </div>
+      </form>
+{% endblock content %}

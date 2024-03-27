@@ -25,6 +25,9 @@ urlpatterns = [
     path('delete_metric/<pk>/', views.delete_metric, name="delete_metric"),
     path('delete_QA/<employee>/<pk>/', views.delete_QA, name="delete_QA"),
     path('delete_note/<employee>/<pk>/', views.delete_note, name="delete_note"),
+    path('delete_call/<employee>/<pk>/', views.delete_call, name="delete_call"),
+    path('add_issue/<pk>/', views.add_issue, name="add_issue"),
+    path('add_issue/<employee>/<pk>/', views.edit_issue, name="edit_issue"),
 
 ]
 

@@ -9,7 +9,7 @@ from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, Div, \
 from states.models import get_managers
 from attorneys.models import Employee, Search_Attorneys_Model, QA_Model, \
     HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model, \
-    To_Do_Model, Metrics_Model
+    To_Do_Model, Metrics_Model, Issues_Model
 
 # Alphabetized list of managers for choices
 managers=get_managers()
@@ -364,3 +364,39 @@ class Metric_Form(ModelForm):
                        css_class='form-group col-md-3 mb-0'),
                 ),
             )
+
+class Issues_Log_Form(ModelForm):
+    class Meta:
+        model = Issues_Model
+        fields = ('date', 'from_person', 'issue', 'follow_up_required',
+                  'follow_up_notes', 'document', 'follow_up_completed')
+        widgets = {
+            'date': DatePickerInput(),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('follow_up_required',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('follow_up_completed',
+                       css_class='form-group col-md-4 mb-0'),
+            ),
+            Row(
+                Column('date',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('from_person',
+                       css_class='form-group col-md-4 mb-0'),
+                Column('document',
+                       css_class='form-group col-md-4 mb-0'),
+            ),
+            Row(
+                Column('issue',
+                       css_class='form-group col-md-6 mb-0'),
+                Column('follow_up_notes',
+                       css_class='form-group col-md-6 mb-0'),
+            ),
+        )

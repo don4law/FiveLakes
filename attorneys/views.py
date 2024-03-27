@@ -8,9 +8,9 @@ from django.forms import inlineformset_factory
 from managers.models import CustomUser
 from attorneys.models import Employee, Search_Attorneys_Model, QA_Model, \
     HR_Requests_Model, Call_Monitoring_Model, Attorney_Notes_Model, Employee_More_Model, \
-    To_Do_Model, Metrics_Model
+    To_Do_Model, Metrics_Model, Issues_Model
 from attorneys.forms import Search_Attorneys_Form, QA_Form, HR_Form, Call_Form, Attorney_Notes_Form, \
-    Edit_EmployeeForm1, Employee_More_Form, To_Do_Form, Metric_Form
+    Edit_EmployeeForm1, Employee_More_Form, To_Do_Form, Metric_Form, Issues_Log_Form
 
 @login_required(login_url=reverse_lazy('login'))
 def attorney_view(request):
@@ -62,6 +62,7 @@ def attorney_view(request):
     # Third, get all user notes for employees
     user_notes_list = Attorney_Notes_Model.objects.filter(employee_id_id__in=employee_list,
                     follow_up_required=True, follow_up_completed=False).order_by('date')
+    issue_log_list = Issues_Model.objects.filter(employee_id_id=request.user.id).order_by('date')
     # Now need name of each employee for each tickler note in the NOTE for template
     for note in user_notes_list:
         for employee in Employee.objects.all():
@@ -69,6 +70,12 @@ def attorney_view(request):
                 setattr(note, "employee_name", employee.first_name + " " + employee.last_name)
     tickler_list = user_notes_list
     context.update({'tickler_list': tickler_list})
+    for issue in issue_log_list:
+        for employee in Employee.objects.all():
+            if issue.employee_id_id == employee.employee_id:
+                setattr(issue, "employee_name", employee.first_name + " " + employee.last_name)
+    issues_list = issue_log_list
+    context.update({'issue_list': issues_list})
 
     # Get Each Managers task list
     manager_id = request.user.id
@@ -83,6 +90,19 @@ def attorney_view(request):
                 setattr(employee, "employee_name", employee.first_name + " " + employee.last_name)
     to_do = to_do_list
     context.update({'to_do_list': to_do})
+
+    # Get Issues Log for Managers
+    # try:
+    #     issues_log = Issues_Model.objects.filter(employee_id_id=manager_id)
+    # except:
+    #     issues_log = Issues_Model.objects.get_or_create(employee_id_id=manager_id)[0]
+    # # Now need name of each employee for each issue
+    # for issue in issues_log:
+    #     for employee in Employee.objects.all():
+    #         if issue.employee_id_id == employee.employee_id:
+    #             setattr(employee, "employee_name", employee.first_name + " " + employee.last_name)
+    # issue_list = issues_log
+    # context.update({'issues_list': issues_log})
     return render(request, 'templates/attorneys.html', context)
 
 
@@ -281,6 +301,13 @@ def edit_call(request, pk=None, employee=None):
         return render(request, 'templates/attorneys/edit_call.html', context)
 
 @login_required(login_url=reverse_lazy('login'))
+def delete_call(request, pk=None, employee=None):
+    context = {'title': 'Attorneys'}
+    call = Call_Monitoring_Model.objects.get(id=pk)
+    call.delete()
+    return HttpResponseRedirect(reverse('attorneys'))
+
+@login_required(login_url=reverse_lazy('login'))
 def add_coaching(request, pk=None):
     context = {'title': 'Attorneys'}
     attorney_data = Employee.objects.get(employee_id=pk)
@@ -450,3 +477,39 @@ def edit_hr(request, pk=None, employee=None):
         hrForm = HR_Form(instance=hr_instance)
         context.update({'hrForm': hrForm})
     return render(request, 'templates/attorneys/edit_hr.html', context)
+
+
+@login_required(login_url=reverse_lazy('login'))
+def add_issue(request, pk=None):
+    context = {'title': 'Attorneys'}
+    attorney_data = CustomUser.objects.get(pk=request.user.id)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Issues_Log_Form(request.POST, request.FILES)
+        form.instance.employee_id_id = pk
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorneys'))
+    else:
+        IssuesForm = Issues_Log_Form(instance=attorney_data)
+        context.update({'issueForm': IssuesForm})
+        return render(request, 'templates/attorneys/add_issue.html', context)
+
+
+@login_required(login_url=reverse_lazy('login'))
+def edit_issue(request, pk=None, employee=None):
+    context = {'title': 'Edit Metric'}
+    attorney_data = Employee.objects.get(employee_id=employee)
+    context.update({'attorney': attorney_data})
+    if request.method == "POST":
+        form = Issues_Log_Form(request.POST, request.FILES)
+        form.instance.id = pk
+        form.instance.employee_id_id = employee
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('attorney_data', kwargs={'pk': employee}), context)
+    else:
+        issue_instance = Issues_Model.objects.get(id=pk, employee_id=employee)
+        issueForm = Issues_Log_Form(instance=issue_instance)
+        context.update({'issueForm': issueForm})
+    return render(request, 'templates/attorneys/edit_issue.html', context)
