@@ -397,6 +397,7 @@ class Metrics_Model(models.Model):
 
     METRIC_CHOICES = [
         ('Attrition Rate', 'Attrition Rate'),
+        ('Quality Assurance', 'Quality Assurance'),
         ('Bandwidth', 'Bandwidth'),
         ('Call Timeliness', 'Call Timeliness'),
         ('Missing Dispo Codes', 'Missing Dispo Codes'),

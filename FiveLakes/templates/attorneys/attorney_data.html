@@ -89,10 +89,11 @@
                                     <th scope="col">Date</th>
                                     <th class="text-center" scope="col">Timeframe</th>
                                     <th class="text-center" scope="col">Attrition Rate</th>
+                                    <th class="text-center" scope="col">Quality Assurance</th>
                                     <th class="text-center" scope="col">Call Timeliness</th>
                                     <th class="text-center" scope="col">Missing Call Dispo</th>
                                     <th class="text-center" scope="col">Reviews Outstanding</th>
-                                    <th class="text-center" scope="col">EA Completion</th>
+{#                                    <th class="text-center" scope="col">EA Completion</th>#}
                                     <th class="text-center" scope="col">Pro Se Answer Reviews</th>
 {#                                    <th class="text-center" scope="col">Other</th>#}
 {#                                    <th scope="col">Other Description</th>#}
@@ -103,9 +104,9 @@
                             </thead>
                             <tbody>
                                 {% for metric in metrics %}
-                                    {% if metric.timeframe == "Monthly" and metric.metric == "Attrition Rate" and metric.value >= 7 %}
+                                    {% if metric.timeframe == "Monthly" and metric.metric == "Attrition Rate" and metric.value >= 5 %}
                                         <tr class="table-danger">
-                                    {% elif metric.timeframe == "Monthly" and metric.metric == "Attrition Rate" and metric.value >= 5 %}
+                                    {% elif metric.timeframe == "Monthly" and metric.metric == "Attrition Rate" and metric.value >= 3 %}
                                         <tr class="table-warning">
                                     {%  elif metric.timeframe == "Monthly" and metric.metric == "Attrition Rate" %}
                                         <tr class="table-info">
@@ -118,6 +119,7 @@
                                         {%  else %}
                                             <td class="text-center">{{metric.timeframe }}</td>
                                         {% endif %}
+
                                         {% if metric.metric == "Attrition Rate" and metric.timeframe == "Monthly" %}
                                             <td class="text-center"><strong>{{metric.value}} %</strong></td>
                                         {%  elif metric.metric == "Attrition Rate" %}
@@ -125,11 +127,21 @@
                                         {%  else %}
                                             <td></td>
                                         {% endif %}
+
+                                        {% if metric.metric == "Quality Assurance" and metric.timeframe == "Monthly" %}
+                                            <td class="text-center"><strong>{{metric.value}} %</strong></td>
+                                        {%  elif metric.metric == "Quality Assurance" %}
+                                            <td class="text-center">{{metric.value}} %</td>
+                                        {%  else %}
+                                            <td></td>
+                                        {% endif %}
+
                                         {% if metric.metric == "Call Timeliness" %}
                                             <td class="text-center">{{metric.value}} %</td>
                                         {%  else %}
                                             <td></td>
                                         {% endif %}
+
                                         {% if metric.metric == "Missing Dispo Codes" %}
                                             <td class="text-center">{{metric.value|floatformat:0 }}</td>
                                         {%  else %}
@@ -140,11 +152,11 @@
                                         {%  else %}
                                             <td></td>
                                         {% endif %}
-                                        {% if metric.metric == "EA Completion" %}
-                                            <td class="text-center">{{metric.value}} %</td>
-                                        {%  else %}
-                                            <td></td>
-                                        {% endif %}
+{#                                        {% if metric.metric == "EA Completion" %}#}
+{#                                            <td class="text-center">{{metric.value}} %</td>#}
+{#                                        {%  else %}#}
+{#                                            <td></td>#}
+{#                                        {% endif %}#}
                                         {% if metric.metric == "Pro Se Answer Reviews" %}
                                             <td class="text-center">{{metric.value}} %</td>
                                         {%  else %}
